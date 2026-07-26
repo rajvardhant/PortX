@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head('Invoices Management')}"></head>
+<body>
+
+<nav th:replace="~{fragments/common :: sidebar('invoices')}"></nav>
+<div class="main-wrapper">
+    <nav th:replace="~{fragments/common :: navbar('Invoices Management')}"></nav>
+    
+    <div class="content-area">
+        <div class="fade-in">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <h4 class="fw-bold mb-0">Invoices</h4>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-transparent p-3 border-bottom d-flex justify-content-between align-items-center">
+                    <div class="input-group" style="max-width: 340px; width: 100%;">
+                        <span class="input-group-text border-end-0"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control border-start-0 table-search-input" placeholder="Search invoices by invoice #, customer, status...">
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4">Invoice #</th>
+                                    <th>Delivery ID</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Amount (₹)</th>
+                                    <th>Status</th>
+                                    <th class="text-end pe-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="invoice : ${invoices}">
+                                    <td class="ps-4 fw-bold" th:text="${'INV-' + invoice.invoiceId}">INV-1</td>
+                                    <td>
+                                        <span class="fw-bold text-primary" th:text="${'#DEL-' + invoice.deliveryId}">#DEL-1</span>
+                                    </td>
+                                    <td class="fw-bold" th:text="${invoice.customerName}">John Doe</td>
+                                    <td class="fw-medium" th:text="${invoice.invoiceDate}">Oct 01, 2026</td>
+                                    <td class="fw-extrabold text-success" th:text="${invoice.amount != null ? '₹ ' + #numbers.formatDecimal(invoice.amount, 1, 2) : '₹ 0.00'}">₹ 150.00</td>
+                                    <td>
+                                        <span class="badge" th:classappend="${invoice.status != null && invoice.status.name() == 'PAID' ? 'bg-paid' : 'bg-pending'}" th:text="${invoice.status}">PENDING</span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="action-btn-group">
+                                            <a th:href="@{/invoices/{id}(id=${invoice.invoiceId})}" class="btn btn-sm btn-primary text-white me-1 fw-semibold">
+                                                <i class="bi bi-eye me-1"></i> View
+                                            </a>
+                                            <form th:if="${invoice.status != null && invoice.status.name() == 'PENDING'}" th:action="@{/invoices/{id}/pay(id=${invoice.invoiceId})}" method="post" class="d-inline m-0">
+                                                <button type="submit" class="btn btn-sm btn-success text-white fw-semibold" onclick="return confirm('Mark this invoice as PAID?');">
+                                                    <i class="bi bi-check-lg me-1"></i> Pay
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(invoices)}" class="empty-table-row">
+                                    <td colspan="7" class="text-center py-5 text-muted">
+                                        <i class="bi bi-receipt fs-1 d-block mb-3"></i>
+                                        No invoices found. Invoices are generated automatically when a delivery is created.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/common :: scripts}"></th:block>
+</body>
+</html>

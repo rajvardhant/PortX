@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head('Drivers Management')}"></head>
+<body>
+
+<nav th:replace="~{fragments/common :: sidebar('drivers')}"></nav>
+<div class="main-wrapper">
+    <nav th:replace="~{fragments/common :: navbar('Drivers Management')}"></nav>
+    
+    <div class="content-area">
+        <div class="fade-in">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <h4 class="fw-bold mb-0">Drivers</h4>
+                <a th:href="@{/admin/drivers/new}" class="btn btn-primary shadow-sm fw-semibold">
+                    <i class="bi bi-plus-lg me-2"></i>Add Driver
+                </a>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-transparent p-3 border-bottom d-flex justify-content-between align-items-center">
+                    <div class="input-group" style="max-width: 340px; width: 100%;">
+                        <span class="input-group-text border-end-0"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control border-start-0 table-search-input" placeholder="Search drivers by name, phone, license...">
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4">ID</th>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>License No</th>
+                                    <th>Vehicle</th>
+                                    <th>Status</th>
+                                    <th class="text-end pe-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="driver : ${drivers}">
+                                    <td class="ps-4 fw-bold" th:text="${driver.driverId}">1</td>
+                                    <td class="fw-bold" th:text="${driver.name}">John Doe</td>
+                                    <td class="fw-medium" th:text="${driver.phone}">+1 234 567 890</td>
+                                    <td class="fw-medium" th:text="${driver.licenseNumber}">LIC-1234</td>
+                                    <td class="fw-medium" th:text="${driver.vehicleRegistrationNumber != null ? driver.vehicleRegistrationNumber : 'Not Assigned'}">Not Assigned</td>
+                                    <td>
+                                        <span class="badge" th:classappend="${driver.status.name() == 'AVAILABLE' ? 'bg-delivered' : (driver.status.name() == 'ON_DUTY' ? 'bg-out_for_delivery' : 'bg-pending')}" th:text="${driver.status}">AVAILABLE</span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="action-btn-group">
+                                            <a th:href="@{/admin/drivers/{id}/edit(id=${driver.driverId})}" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form th:action="@{/admin/drivers/{id}/delete(id=${driver.driverId})}" method="post" class="d-inline m-0" onsubmit="return confirm('Are you sure you want to delete this driver?');">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(drivers)}" class="empty-table-row">
+                                    <td colspan="7" class="text-center py-5 text-muted">
+                                        <i class="bi bi-person-x fs-1 d-block mb-3"></i>
+                                        No drivers found. Click 'Add Driver' to create one.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/common :: scripts}"></th:block>
+</body>
+</html>

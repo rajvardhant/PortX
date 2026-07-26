@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head(${driverRequest.id == null ? 'Add Driver' : 'Edit Driver'})}"></head>
+<body>
+
+<nav th:replace="~{fragments/common :: sidebar('drivers')}"></nav>
+<div class="main-wrapper">
+    <nav th:replace="~{fragments/common :: navbar(${driverRequest.id == null ? 'Add New Driver' : 'Edit Driver'})}"></nav>
+    
+    <div class="content-area">
+        <div class="fade-in">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white p-4 border-bottom">
+                            <h5 class="mb-0 fw-bold" th:text="${driverRequest.id == null ? 'Add New Driver' : 'Edit Driver'}">Add New Driver</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form th:action="@{/admin/drivers/save}" th:object="${driverRequest}" method="post">
+                                <input type="hidden" th:field="*{id}" />
+                                
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <label for="name" class="form-label fw-semibold">Full Name *</label>
+                                        <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="e.g. Rahul Sharma" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="phone" class="form-label fw-semibold">Phone Number (10 Digits) *</label>
+                                        <input type="tel" class="form-control" id="phone" th:field="*{phone}" 
+                                               placeholder="10-digit number e.g. 9876543210" 
+                                               pattern="[0-9]{10}" maxlength="10" inputmode="numeric"
+                                               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+                                        <div class="form-text text-muted small">Must be exactly 10 numeric digits.</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="licenseNumber" class="form-label fw-semibold">License Number *</label>
+                                        <input type="text" class="form-control text-uppercase" id="licenseNumber" th:field="*{licenseNumber}" 
+                                               placeholder="e.g. MH01202311" 
+                                               style="text-transform: uppercase;"
+                                               oninput="this.value = this.value.toUpperCase();" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="status" class="form-label fw-semibold">Driver Status</label>
+                                        <select class="form-select" id="status" th:field="*{status}">
+                                            <option value="AVAILABLE">AVAILABLE</option>
+                                            <option value="ON_DUTY">ON_DUTY</option>
+                                            <option value="OFF_DUTY">OFF_DUTY</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="vehicleId" class="form-label fw-semibold">Assign Vehicle</label>
+                                        <select class="form-select" id="vehicleId" th:field="*{vehicleId}">
+                                            <option value="">-- No Vehicle Assigned --</option>
+                                            <option th:each="v : ${vehicles}" th:value="${v.vehicleId}" th:text="${v.registrationNumber + ' (' + v.vehicleType + ' - Cap: ' + v.capacity + 'kg)'}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-5 d-flex gap-3">
+                                    <button type="submit" class="btn btn-primary px-4"><i class="bi bi-save me-2"></i>Save Driver</button>
+                                    <a th:href="@{/admin/drivers}" class="btn btn-light px-4">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/common :: scripts}"></th:block>
+</body>
+</html>

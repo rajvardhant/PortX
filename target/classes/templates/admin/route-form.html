@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/common :: head('Calculate Route Distance')}"></th:block>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+</head>
+<body>
+
+<nav th:replace="~{fragments/common :: sidebar('routes')}"></nav>
+<div class="main-wrapper">
+    <nav th:replace="~{fragments/common :: navbar('Calculate Route Distance')}"></nav>
+    
+    <div class="content-area">
+        <div class="fade-in">
+            <div class="row g-4 justify-content-center">
+                <!-- Left Side: Instant Distance & Price Form -->
+                <div class="col-lg-6">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white p-4 border-bottom">
+                            <h5 class="mb-0 fw-bold"><i class="bi bi-calculator me-2 text-primary"></i>Distance & Fare Calculator</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <label for="startLocation" class="form-label fw-semibold">Start Location (Pickup) *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-primary"><i class="bi bi-geo-alt-fill"></i></span>
+                                    <input type="text" class="form-control" id="startLocation" placeholder="e.g. Surat, Gujarat" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="endLocation" class="form-label fw-semibold">End Location (Destination) *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light text-danger"><i class="bi bi-geo-fill"></i></span>
+                                    <input type="text" class="form-control" id="endLocation" placeholder="e.g. Mumbai, Maharashtra" required>
+                                </div>
+                            </div>
+
+                            <button type="button" id="generate-btn" class="btn btn-primary w-100 mb-4 py-25 fw-bold shadow-sm">
+                                <i class="bi bi-speedometer2 me-2"></i>Calculate Distance Instantly
+                            </button>
+                            
+                            <!-- Loading Spinner -->
+                            <div id="route-loading" class="d-none text-center py-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Calculating...</span>
+                                </div>
+                                <p class="text-muted mt-2 small">Calculating distance...</p>
+                            </div>
+                            
+                            <!-- Result & Price Estimator Box -->
+                            <div id="route-result" class="d-none">
+                                <div class="card bg-primary bg-opacity-10 border-0 p-3 mb-4 rounded-3">
+                                    <h6 class="fw-bold text-primary mb-3"><i class="bi bi-check-circle-fill me-2"></i>Distance Summary</h6>
+                                    
+                                    <div class="row g-3 text-center mb-3">
+                                        <div class="col-6">
+                                            <div class="p-2 bg-white rounded-3 border" style="background-color: var(--card-bg) !important; border-color: var(--card-border) !important;">
+                                                <div class="small text-muted fw-semibold">Total Distance</div>
+                                                <div class="fs-4 fw-extrabold text-primary" id="result-distance">0.00 km</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="p-2 bg-white rounded-3 border" style="background-color: var(--card-bg) !important; border-color: var(--card-border) !important;">
+                                                <div class="small text-muted fw-semibold">Estimated Time</div>
+                                                <div class="fs-4 fw-extrabold" id="result-time" style="color: var(--text-main) !important;">0 mins</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Interactive Per-KM Price Calculator -->
+                                    <div class="p-3 bg-white rounded-3 border" style="background-color: var(--card-bg) !important; border-color: var(--card-border) !important;">
+                                        <h6 class="fw-bold mb-2 small" style="color: var(--text-main) !important;"><i class="bi bi-currency-rupee text-success"></i> Per-KM Fare Estimator</h6>
+                                        <div class="row g-2 align-items-center mb-2">
+                                            <div class="col-6 small" style="color: var(--text-sub) !important;">Rate Per KM:</div>
+                                            <div class="col-6 text-end">
+                                                <input type="number" id="ratePerKm" class="form-control form-control-sm text-end fw-bold" value="15" min="1" oninput="updateFarePrice()">
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                                            <span class="fw-bold small" style="color: var(--text-main) !important;">Estimated Freight Cost:</span>
+                                            <span class="fs-5 fw-extrabold text-success" id="result-price">₹ 0.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <a th:href="@{/admin/routes}" class="btn btn-outline-secondary w-100 fw-semibold">
+                                    <i class="bi bi-check2-circle me-2"></i>Save & View All Routes
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Simple Map Preview -->
+                <div class="col-lg-6">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-header bg-white p-3 border-bottom">
+                            <h6 class="mb-0 fw-bold" style="color: var(--text-main);"><i class="bi bi-map me-2"></i>Map Overview</h6>
+                        </div>
+                        <div class="card-body p-2 d-flex flex-column" style="min-height: 420px;">
+                            <div id="map" class="flex-grow-1" style="min-height: 400px; width: 100%; border-radius: 0.8rem;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/common :: scripts}"></th:block>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="/js/map.js"></script>
+<script>
+    let currentDistanceKm = 0;
+
+    function updateFarePrice() {
+        const rate = parseFloat(document.getElementById('ratePerKm').value) || 15;
+        const baseFee = 100;
+        const total = baseFee + (currentDistanceKm * rate);
+        document.getElementById('result-price').textContent = '₹ ' + total.toFixed(2);
+    }
+</script>
+</body>
+</html>

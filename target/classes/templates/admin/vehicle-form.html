@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head(${vehicleRequest.id == null ? 'Add Vehicle' : 'Edit Vehicle'})}"></head>
+<body>
+
+<nav th:replace="~{fragments/common :: sidebar('vehicles')}"></nav>
+<div class="main-wrapper">
+    <nav th:replace="~{fragments/common :: navbar(${vehicleRequest.id == null ? 'Add New Vehicle' : 'Edit Vehicle'})}"></nav>
+    
+    <div class="content-area">
+        <div class="fade-in">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white p-4 border-bottom">
+                            <h5 class="mb-0 fw-bold" th:text="${vehicleRequest.id == null ? 'Add New Vehicle' : 'Edit Vehicle'}">Add New Vehicle</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form th:action="@{/admin/vehicles/save}" th:object="${vehicleRequest}" method="post">
+                                <input type="hidden" th:field="*{id}" />
+                                
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <label for="registrationNumber" class="form-label fw-semibold">Registration Number *</label>
+                                        <input type="text" class="form-control text-uppercase" id="registrationNumber" th:field="*{registrationNumber}" 
+                                               placeholder="e.g. MH01AB1234" 
+                                               style="text-transform: uppercase;"
+                                               oninput="this.value = this.value.toUpperCase();" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="vehicleType" class="form-label fw-semibold">Vehicle Type *</label>
+                                        <select class="form-select" id="vehicleType" th:field="*{vehicleType}" required>
+                                            <option value="TRUCK">TRUCK (Heavy Freight)</option>
+                                            <option value="VAN">VAN (Intra-city Deliveries)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="capacity" class="form-label fw-semibold">Capacity (kg) *</label>
+                                        <input type="number" class="form-control" id="capacity" th:field="*{capacity}" min="1" placeholder="e.g. 1500" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="status" class="form-label fw-semibold">Status</label>
+                                        <select class="form-select" id="status" th:field="*{status}">
+                                            <option value="AVAILABLE">AVAILABLE</option>
+                                            <option value="IN_TRANSIT">IN_TRANSIT</option>
+                                            <option value="MAINTENANCE">MAINTENANCE</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-5 d-flex gap-3">
+                                    <button type="submit" class="btn btn-primary px-4"><i class="bi bi-save me-2"></i>Save Vehicle</button>
+                                    <a th:href="@{/admin/vehicles}" class="btn btn-light px-4">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/common :: scripts}"></th:block>
+</body>
+</html>

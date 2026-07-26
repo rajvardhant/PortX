@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!-- Head Fragment -->
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} + ' | PortX'">PortX</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS & Theme System -->
+    <link href="/css/style.css?v=1.0.8" rel="stylesheet">
+    <link href="/css/print.css?v=1.0.8" rel="stylesheet" media="print">
+</head>
+<body>
+
+<!-- Copilot-Style Collapsible Sidebar Fragment -->
+<nav id="sidebar" class="sidebar" th:fragment="sidebar(activeMenu)">
+    <div class="sidebar-header">
+        <a href="/" class="text-decoration-none logo-link" title="PortX Home">
+            <div class="logo-container">
+                <div class="logo-icon"><i class="bi bi-truck"></i></div>
+                <div class="logo-text">PortX</div>
+            </div>
+        </a>
+        <button type="button" class="btn-sidebar-toggle" id="sidebar-toggle" title="Toggle Sidebar">
+            <i class="bi bi-list fs-4"></i>
+        </button>
+    </div>
+    
+    <ul class="sidebar-nav">
+        <!-- Admin / Dispatcher Navigation -->
+        <div sec:authorize="hasAnyRole('ADMIN', 'DISPATCHER')">
+            <li>
+                <a th:href="@{/admin/dashboard}" th:classappend="${activeMenu == 'dashboard'} ? 'active' : ''" title="Dashboard">
+                    <i class="bi bi-grid-1x2"></i><span class="nav-text">Dashboard</span>
+                </a>
+            </li>
+            
+            <li sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/admin/drivers}" th:classappend="${activeMenu == 'drivers'} ? 'active' : ''" title="Drivers">
+                    <i class="bi bi-person-badge"></i><span class="nav-text">Drivers</span>
+                </a>
+            </li>
+            <li sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/admin/vehicles}" th:classappend="${activeMenu == 'vehicles'} ? 'active' : ''" title="Vehicles">
+                    <i class="bi bi-truck-front"></i><span class="nav-text">Vehicles</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/routes}" th:classappend="${activeMenu == 'routes'} ? 'active' : ''" title="Routes">
+                    <i class="bi bi-map"></i><span class="nav-text">Routes</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/dispatcher/deliveries}" th:classappend="${activeMenu == 'deliveries'} ? 'active' : ''" title="Deliveries">
+                    <i class="bi bi-box-seam"></i><span class="nav-text">Deliveries</span>
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/invoices}" th:classappend="${activeMenu == 'invoices'} ? 'active' : ''" title="Invoices">
+                    <i class="bi bi-receipt"></i><span class="nav-text">Invoices</span>
+                </a>
+            </li>
+        </div>
+        
+        <!-- Driver Navigation -->
+        <div sec:authorize="hasRole('DRIVER')">
+            <li>
+                <a th:href="@{/driver/dashboard}" th:classappend="${activeMenu == 'dashboard'} ? 'active' : ''" title="Dashboard">
+                    <i class="bi bi-grid-1x2"></i><span class="nav-text">Dashboard</span>
+                </a>
+            </li>
+        </div>
+
+        <li class="sidebar-divider"><hr></li>
+
+        <!-- Logout Section -->
+        <li>
+            <a th:href="@{/logout}" class="text-danger-link" title="Logout">
+                <i class="bi bi-box-arrow-left"></i><span class="nav-text">Logout</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<!-- Top Navbar Fragment -->
+<nav class="top-navbar" th:fragment="navbar(pageTitle)">
+    <div class="d-flex align-items-center gap-3">
+        <h5 class="mb-0 fw-bold" th:text="${pageTitle}">Dashboard</h5>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+        <!-- Theme Toggle Button (Light/Dark Mode) -->
+        <button class="theme-toggle-btn" title="Toggle Light/Dark Theme">
+            <i class="bi bi-moon-stars-fill theme-toggle-icon"></i>
+        </button>
+
+        <div class="vr my-2"></div>
+
+        <!-- User Info -->
+        <div class="navbar-user">
+            <div class="user-avatar" th:text="${#strings.substring(#authentication.name,0,1).toUpperCase()}">A</div>
+            <div>
+                <div class="user-name" sec:authentication="name">User</div>
+                <div class="user-role" sec:authorize="hasRole('ADMIN')">Administrator</div>
+                <div class="user-role" sec:authorize="hasRole('DISPATCHER')">Dispatcher</div>
+                <div class="user-role" sec:authorize="hasRole('DRIVER')">Driver</div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Shared Scripts Fragment -->
+<th:block th:fragment="scripts">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/app.js"></script>
+</th:block>
+
+</body>
+</html>

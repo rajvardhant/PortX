@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head('Invoice Details')}"></head>
+<body>
+
+<nav th:replace="~{fragments/common :: sidebar('invoices')}"></nav>
+<div class="main-wrapper">
+    <nav th:replace="~{fragments/common :: navbar('Invoice Details')}"></nav>
+    
+    <div class="content-area">
+        <div class="fade-in">
+            <!-- Action Toolbar (Hidden during print) -->
+            <div class="d-flex justify-content-between align-items-center mb-4 no-print" style="max-width: 850px; margin: 0 auto;">
+                <a th:href="@{/invoices}" class="btn btn-outline-secondary shadow-sm fw-semibold">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Invoices
+                </a>
+                <button onclick="window.print()" class="btn btn-primary shadow-sm fw-semibold">
+                    <i class="bi bi-printer me-2"></i>Print / Download Invoice
+                </button>
+            </div>
+
+            <!-- Styled Invoice Document Card -->
+            <div class="card invoice-container mx-auto overflow-hidden border-0 shadow-lg" style="max-width: 850px;">
+                
+                <!-- Curved Top Banner -->
+                <div class="invoice-banner p-4 p-md-5">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="fw-extrabold tracking-wider mb-0 text-white" style="font-size: 2.75rem; letter-spacing: 2px;">INVOICE</h1>
+                            <div class="text-white opacity-75 small mt-1">PortX Logistics & Freight Platform</div>
+                        </div>
+                        <div class="text-end">
+                            <div class="fw-bold fs-5 tracking-wider text-white" th:text="${'NO: INV-' + invoice.invoiceId + '-1'}">NO: INV-12345-1</div>
+                            <div class="mt-2 status-badge-container">
+                                <span class="badge bg-white text-dark px-3 py-1 fw-bold status-badge-print" th:text="${invoice.status}">PENDING</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <!-- Bill To & From Section -->
+                    <div class="row mb-4">
+                        <!-- Bill To -->
+                        <div class="col-sm-6 mb-3 mb-sm-0">
+                            <h6 class="fw-bold invoice-heading mb-2">Bill To:</h6>
+                            <div class="fs-6 fw-bold text-primary invoice-customer" th:text="${invoice.customerName}">Sunny</div>
+                            <div class="invoice-subtext small mt-1">+91 98765 43210</div>
+                            <div class="invoice-subtext small" th:text="${invoice.deliveryId != null ? 'Delivery Ref: #DEL-' + invoice.deliveryId : '123 Anywhere St., Any City'}">Delivery Ref: #DEL-1</div>
+                        </div>
+
+                        <!-- From -->
+                        <div class="col-sm-6 text-sm-end">
+                            <h6 class="fw-bold invoice-heading mb-2">From:</h6>
+                            <div class="fs-6 fw-bold text-primary invoice-customer">PortX Logistics Hub</div>
+                            <div class="invoice-subtext small mt-1">+91 1800 123 4567</div>
+                            <div class="invoice-subtext small">123 Anywhere St., Any City</div>
+                        </div>
+                    </div>
+
+                    <!-- Date Row -->
+                    <div class="mb-4 pb-2 border-bottom">
+                        <span class="fw-bold invoice-heading">Date:</span>
+                        <span class="invoice-subtext ms-2 fw-semibold" th:text="${invoice.invoiceDate != null ? #temporals.format(invoice.invoiceDate, 'dd MMMM yyyy') : '25 July 2026'}">25 July 2026</span>
+                    </div>
+
+                    <!-- Itemized Table -->
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered text-center align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="text-start ps-3" style="width: 45%;">Description</th>
+                                    <th style="width: 15%;">Qty</th>
+                                    <th style="width: 20%;">Price</th>
+                                    <th style="width: 20%;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-start ps-3 fw-medium">Base Freight & Logistics Processing</td>
+                                    <td>1</td>
+                                    <td>₹ 100.00</td>
+                                    <td class="fw-semibold">₹ 100.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start ps-3 fw-medium">Distance & Route Charge</td>
+                                    <td>1</td>
+                                    <td th:text="${invoice.amount != null ? '₹ ' + #numbers.formatDecimal(invoice.amount - 100.0, 1, 2) : '₹ 0.00'}">₹ 0.00</td>
+                                    <td class="fw-semibold" th:text="${invoice.amount != null ? '₹ ' + #numbers.formatDecimal(invoice.amount - 100.0, 1, 2) : '₹ 0.00'}">₹ 0.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start ps-3 invoice-subtext small">Standard Insurance & Handling</td>
+                                    <td class="invoice-subtext">1</td>
+                                    <td class="invoice-subtext">₹ 0.00</td>
+                                    <td class="invoice-subtext">₹ 0.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Sub Total Bar -->
+                    <div class="row justify-content-end mb-5">
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between align-items-center p-3 rounded-3 text-white shadow-sm invoice-subtotal-bar" style="background: linear-gradient(135deg, #4f46e5, #6366f1);">
+                                <span class="fw-bold fs-6">Sub Total</span>
+                                <span class="fw-extrabold fs-4" th:text="${invoice.amount != null ? '₹ ' + #numbers.formatDecimal(invoice.amount, 1, 2) : '₹ 0.00'}">₹ 0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Note & Payment Info Footer -->
+                    <div class="row pt-3 align-items-end">
+                        <div class="col-md-7 mb-4 mb-md-0">
+                            <div class="mb-4">
+                                <h6 class="fw-bold invoice-heading mb-2">Note:</h6>
+                                <p class="invoice-subtext small mb-0" th:text="${invoice.remarks != null ? invoice.remarks : 'Auto-generated invoice for PortX intra-city freight shipment.'}">Auto-generated invoice for PortX intra-city freight shipment.</p>
+                            </div>
+
+                            <div>
+                                <h6 class="fw-bold invoice-heading mb-2">Payment Information:</h6>
+                                <div class="small invoice-subtext"><span class="fw-bold invoice-heading">Bank:</span> State Bank of India / HDFC</div>
+                                <div class="small invoice-subtext"><span class="fw-bold invoice-heading">Account No:</span> 123-456-7890</div>
+                                <div class="small invoice-subtext"><span class="fw-bold invoice-heading">Email:</span> billing@portx.com</div>
+                            </div>
+                        </div>
+
+                        <!-- Thank You -->
+                        <div class="col-md-5 text-md-end">
+                            <div class="display-6 fw-extrabold invoice-heading" style="font-family: 'Inter', sans-serif; letter-spacing: -1px;">
+                                Thank You!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/common :: scripts}"></th:block>
+</body>
+</html>

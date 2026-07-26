@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head('Dashboard')}"></head>
+<body>
+
+<nav th:replace="~{fragments/common :: sidebar('dashboard')}"></nav>
+<div class="main-wrapper">
+    <nav th:replace="~{fragments/common :: navbar('Dashboard')}"></nav>
+    
+    <div class="content-area">
+        <div class="fade-in">
+            <!-- Stats Row 1 -->
+            <div class="row g-4 mb-4">
+                <div class="col-xl-3 col-md-6">
+                    <div class="card stat-card" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">
+                        <div class="card-body">
+                            <div>
+                                <div class="stat-value" th:text="${stats?.totalDrivers ?: 0}">0</div>
+                                <div class="stat-label">Total Drivers</div>
+                            </div>
+                        </div>
+                        <i class="bi bi-person-badge stat-card-icon"></i>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card stat-card" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                        <div class="card-body">
+                            <div>
+                                <div class="stat-value" th:text="${stats?.totalVehicles ?: 0}">0</div>
+                                <div class="stat-label">Total Vehicles</div>
+                            </div>
+                        </div>
+                        <i class="bi bi-truck-front stat-card-icon"></i>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card stat-card" style="background: linear-gradient(135deg, #0284c7, #0369a1);">
+                        <div class="card-body">
+                            <div>
+                                <div class="stat-value" th:text="${stats?.totalDeliveries ?: 0}">0</div>
+                                <div class="stat-label">Total Deliveries</div>
+                            </div>
+                        </div>
+                        <i class="bi bi-box-seam stat-card-icon"></i>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card stat-card" style="background: linear-gradient(135deg, #d97706, #b45309);">
+                        <div class="card-body">
+                            <div>
+                                <div class="stat-value" th:text="${stats?.pendingDeliveries ?: 0}">0</div>
+                                <div class="stat-label">Pending Deliveries</div>
+                            </div>
+                        </div>
+                        <i class="bi bi-hourglass-split stat-card-icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Row 2 -->
+            <div class="row g-4 mb-4">
+                <div class="col-xl-3 col-md-6">
+                    <div class="card stat-card" style="background: linear-gradient(135deg, #ea580c, #c2410c);">
+                        <div class="card-body">
+                            <div>
+                                <div class="stat-value" th:text="${stats?.ongoingDeliveries ?: 0}">0</div>
+                                <div class="stat-label">Ongoing Deliveries</div>
+                            </div>
+                        </div>
+                        <i class="bi bi-arrow-repeat stat-card-icon"></i>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card stat-card" style="background: linear-gradient(135deg, #059669, #047857);">
+                        <div class="card-body">
+                            <div>
+                                <div class="stat-value" th:text="${stats?.completedDeliveries ?: 0}">0</div>
+                                <div class="stat-label">Completed Deliveries</div>
+                            </div>
+                        </div>
+                        <i class="bi bi-check-circle stat-card-icon"></i>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card stat-card" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                        <div class="card-body">
+                            <div>
+                                <div class="stat-value" th:text="${stats?.pendingInvoices ?: 0}">0</div>
+                                <div class="stat-label">Pending Invoices</div>
+                            </div>
+                        </div>
+                        <i class="bi bi-receipt stat-card-icon"></i>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card stat-card" style="background: linear-gradient(135deg, #0d9488, #0f766e);">
+                        <div class="card-body">
+                            <div>
+                                <div class="stat-value" th:text="${stats?.completedInvoices ?: 0}">0</div>
+                                <div class="stat-label">Paid Invoices</div>
+                            </div>
+                        </div>
+                        <i class="bi bi-receipt-cutoff stat-card-icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-header border-0 bg-transparent pt-4 pb-0">
+                            <h6 class="mb-0 fw-bold">Delivery Status Overview</h6>
+                        </div>
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <div style="width: 280px; height: 280px;">
+                                <canvas id="deliveryChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-header border-0 bg-transparent pt-4 pb-0">
+                            <h6 class="mb-0 fw-bold">Invoice Status</h6>
+                        </div>
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <div style="width: 100%; max-width: 380px;">
+                                <canvas id="invoiceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Section -->
+            <div class="row g-4">
+                <div class="col-md-8">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-header bg-transparent d-flex justify-content-between align-items-center border-bottom">
+                            <h6 class="mb-0 fw-bold">Recent Deliveries</h6>
+                            <a th:href="@{/dispatcher/deliveries}" class="btn btn-sm btn-light border">View All</a>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0 align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th class="ps-4">ID</th>
+                                            <th>Customer</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="delivery : ${recentDeliveries}">
+                                            <td class="ps-4 fw-semibold text-primary" th:text="${'#DEL-' + delivery.deliveryId}">#DEL-1</td>
+                                            <td th:text="${delivery.customerName}">John Doe</td>
+                                            <td><span class="badge" th:classappend="'bg-' + ${#strings.toLowerCase(delivery.status)}" th:text="${delivery.status}">PENDING</span></td>
+                                            <td th:text="${#temporals.format(delivery.createdAt, 'MMM dd, yyyy')}">Oct 01, 2026</td>
+                                        </tr>
+                                        <tr th:if="${#lists.isEmpty(recentDeliveries)}">
+                                            <td colspan="4" class="text-center text-muted py-4">No recent deliveries found.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-header bg-transparent border-bottom">
+                            <h6 class="mb-0 fw-bold">Quick Actions</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-3">
+                                <a th:href="@{/admin/drivers/new}" class="btn quick-action-btn text-start p-3 d-flex align-items-center rounded-3">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-3 p-2 me-3"><i class="bi bi-person-plus fs-5"></i></div>
+                                    <div>
+                                        <div class="fw-bold">Add New Driver</div>
+                                        <div class="small text-muted">Register driver & assign vehicle</div>
+                                    </div>
+                                </a>
+                                <a th:href="@{/admin/vehicles/new}" class="btn quick-action-btn text-start p-3 d-flex align-items-center rounded-3">
+                                    <div class="bg-success bg-opacity-10 text-success rounded-3 p-2 me-3"><i class="bi bi-truck-front fs-5"></i></div>
+                                    <div>
+                                        <div class="fw-bold">Add New Vehicle</div>
+                                        <div class="small text-muted">Add commercial truck or van</div>
+                                    </div>
+                                </a>
+                                <a th:href="@{/admin/routes/new}" class="btn quick-action-btn text-start p-3 d-flex align-items-center rounded-3">
+                                    <div class="bg-info bg-opacity-10 text-info rounded-3 p-2 me-3"><i class="bi bi-map fs-5"></i></div>
+                                    <div>
+                                        <div class="fw-bold">Generate Route</div>
+                                        <div class="small text-muted">Calculate distance & map</div>
+                                    </div>
+                                </a>
+                                <a th:href="@{/dispatcher/deliveries/new}" class="btn quick-action-btn text-start p-3 d-flex align-items-center rounded-3">
+                                    <div class="bg-warning bg-opacity-10 text-warning rounded-3 p-2 me-3"><i class="bi bi-box-seam fs-5"></i></div>
+                                    <div>
+                                        <div class="fw-bold">Create Delivery</div>
+                                        <div class="small text-muted">Book shipment & auto-bill</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/common :: scripts}"></th:block>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/js/dashboard.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const deliveryStats = /*[[${deliveryStatusCounts}]]*/ { PENDING: 0, ASSIGNED: 0, OUT_FOR_DELIVERY: 0, DELIVERED: 0 };
+    const invoiceStats = /*[[${invoiceStatusCounts}]]*/ { PENDING: 0, PAID: 0 };
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        initDeliveryChart(deliveryStats);
+        initInvoiceChart(invoiceStats);
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

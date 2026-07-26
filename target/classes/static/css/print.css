@@ -1,0 +1,96 @@
+@media print {
+  /* Hide navigation, sidebar, toolbars, buttons, and status badge */
+  .sidebar, .navbar, .top-navbar, .no-print, .btn, footer, .badge, .status-badge-print, .status-badge-container {
+    display: none !important;
+  }
+  
+  .main-wrapper, .main-content, .content-area {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    background: #ffffff !important;
+  }
+
+  body, html {
+    background: #ffffff !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  .card, .invoice-container {
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Force Top Banner to Print Dark Blue with Crisp White Title */
+  .invoice-banner {
+    background: #0b1329 !important;
+    color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    padding: 2.5rem 2rem !important;
+  }
+
+  .invoice-banner h1, .invoice-banner div {
+    color: #ffffff !important;
+  }
+
+  /* Force All Document Text & Labels to Bold Pitch Black */
+  h1, h2, h3, h4, h5, h6,
+  .invoice-heading, .invoice-subtext, .invoice-customer,
+  .text-muted, .text-secondary, .text-primary, .text-dark,
+  p, div, span, td, th {
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .invoice-customer {
+    font-size: 1.2rem !important;
+    font-weight: 800 !important;
+    color: #000000 !important;
+  }
+
+  /* Table Print Contrast */
+  .table {
+    border: 1px solid #000000 !important;
+    color: #000000 !important;
+    width: 100% !important;
+  }
+
+  .table th {
+    background-color: #f1f5f9 !important;
+    color: #000000 !important;
+    border: 1px solid #000000 !important;
+    font-weight: 800 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .table td {
+    border: 1px solid #000000 !important;
+    color: #000000 !important;
+    font-weight: 600 !important;
+  }
+
+  /* Total Bar Print Styling */
+  .invoice-subtotal-bar {
+    background-color: #0b1329 !important;
+    color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .invoice-subtotal-bar span {
+    color: #ffffff !important;
+  }
+}
