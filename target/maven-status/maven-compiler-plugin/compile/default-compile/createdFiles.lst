@@ -7,6 +7,7 @@ com\portx\routesystem\dto\DashboardStats$DashboardStatsBuilder.class
 com\portx\routesystem\dto\DashboardStats.class
 com\portx\routesystem\dto\AuthResponse$AuthResponseBuilder.class
 com\portx\routesystem\entity\Vehicle.class
+com\portx\routesystem\controller\AdminController.class
 com\portx\routesystem\repository\VehicleRepository.class
 com\portx\routesystem\dto\InvoiceResponse$InvoiceResponseBuilder.class
 com\portx\routesystem\entity\User.class
@@ -24,6 +25,7 @@ com\portx\routesystem\entity\Route$RouteBuilder.class
 com\portx\routesystem\service\DashboardService.class
 com\portx\routesystem\service\VehicleService.class
 com\portx\routesystem\entity\Invoice.class
+com\portx\routesystem\controller\DispatcherController.class
 com\portx\routesystem\entity\VehicleType.class
 com\portx\routesystem\entity\DeliveryStatus.class
 com\portx\routesystem\service\RouteService.class
@@ -36,6 +38,7 @@ com\portx\routesystem\dto\AuthResponse.class
 com\portx\routesystem\dto\RouteResponse$RouteResponseBuilder.class
 com\portx\routesystem\security\JwtUtil.class
 com\portx\routesystem\entity\Route.class
+com\portx\routesystem\service\UserService.class
 com\portx\routesystem\entity\VehicleStatus.class
 com\portx\routesystem\service\DriverService.class
 com\portx\routesystem\entity\Delivery.class

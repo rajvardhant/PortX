@@ -20,13 +20,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
- * SecurityConfig - Configures Spring Security for PortX application.
+ * SecurityConfig — Modular Role-Based Security Configuration.
  *
- * Key Configurations:
- * 1. Dual authentication: Session-based form login for Thymeleaf pages, JWT for REST API (/api/**)
- * 2. Public access to landing page (/), services, about, contact, and auth pages (/login, /register)
- * 3. Role-based access control: ADMIN, DISPATCHER, DRIVER
- * 4. Custom logout redirect: Redirects directly to the home/landing page (/) upon logout.
+ * ROLE ACCESS MATRIX:
+ * 1. ADMIN (ROLE_ADMIN): System manager (Users, Fleet, Vehicles, Customers, Orders, System Dashboard, Reports).
+ * 2. DISPATCHER (ROLE_DISPATCHER): Operations manager (Daily dispatch, Driver assignments, Active tracking, Routes).
+ * 3. DRIVER (ROLE_DRIVER): Delivery executive (Assigned orders, Pickups, In-transit updates, Delivery completion, History).
  */
 @Configuration
 @EnableWebSecurity
@@ -61,7 +60,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // Disable CSRF only for REST API calls; Thymeleaf form requests retain protection
+            // Disable CSRF for REST API calls; Thymeleaf form requests retain protection
             .csrf(csrf -> csrf
                 .ignoringRequestMatchers("/api/**")
             )
@@ -75,21 +74,23 @@ public class SecurityConfig {
                     "/webjars/**", "/favicon.ico"
                 ).permitAll()
 
-                // Admin-only REST operations
-                .requestMatchers(HttpMethod.POST, "/api/drivers/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/drivers/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/drivers/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/api/vehicles/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/vehicles/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/vehicles/**").hasRole("ADMIN")
+                // ── 1. ADMIN MODULE (ROLE_ADMIN Only) ──────────────────────
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/admin/drivers/**").hasRole("ADMIN")
+                .requestMatchers("/admin/vehicles/**").hasRole("ADMIN")
 
-                // Admin & Dispatcher operations
-                .requestMatchers(HttpMethod.POST, "/api/deliveries/**").hasAnyRole("ADMIN", "DISPATCHER")
-                .requestMatchers("/admin/**").hasAnyRole("ADMIN", "DISPATCHER")
+                // ── 2. DISPATCHER MODULE (ROLE_ADMIN & ROLE_DISPATCHER) ────
+                .requestMatchers("/api/dispatcher/**").hasAnyRole("ADMIN", "DISPATCHER")
+                .requestMatchers("/admin/dashboard").hasAnyRole("ADMIN", "DISPATCHER")
+                .requestMatchers("/admin/routes/**").hasAnyRole("ADMIN", "DISPATCHER")
                 .requestMatchers("/dispatcher/**").hasAnyRole("ADMIN", "DISPATCHER")
 
-                // Driver portal pages
+                // ── 3. DRIVER MODULE (ROLE_ADMIN & ROLE_DRIVER) ────────────
+                .requestMatchers("/api/driver/**").hasAnyRole("ADMIN", "DRIVER")
                 .requestMatchers("/driver/**").hasAnyRole("ADMIN", "DRIVER")
+
+                // ── 4. INVOICES (ROLE_ADMIN & ROLE_DISPATCHER) ─────────────
+                .requestMatchers("/invoices/**").hasAnyRole("ADMIN", "DISPATCHER")
 
                 // All other requests require authentication
                 .anyRequest().authenticated()
@@ -110,8 +111,8 @@ public class SecurityConfig {
             )
             // Logout configuration - Redirects to Landing Page (/)
             .logout(logout -> logout
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // Allows GET and POST /logout
-                .logoutSuccessUrl("/") // Redirects to Home/Landing page
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll()

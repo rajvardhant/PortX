@@ -12,8 +12,8 @@
     <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Custom CSS & Theme System -->
-    <link href="/css/style.css?v=1.0.8" rel="stylesheet">
-    <link href="/css/print.css?v=1.0.8" rel="stylesheet" media="print">
+    <link href="/css/style.css?v=1.0.9" rel="stylesheet">
+    <link href="/css/print.css?v=1.0.9" rel="stylesheet" media="print">
 </head>
 <body>
 
@@ -61,6 +61,11 @@
                 </a>
             </li>
             <li>
+                <a th:href="@{/driver/dashboard}" th:classappend="${activeMenu == 'driver-dashboard'} ? 'active' : ''" title="Driver Portal">
+                    <i class="bi bi-speedometer2"></i><span class="nav-text">Driver Portal</span>
+                </a>
+            </li>
+            <li>
                 <a th:href="@{/invoices}" th:classappend="${activeMenu == 'invoices'} ? 'active' : ''" title="Invoices">
                     <i class="bi bi-receipt"></i><span class="nav-text">Invoices</span>
                 </a>
@@ -70,8 +75,8 @@
         <!-- Driver Navigation -->
         <div sec:authorize="hasRole('DRIVER')">
             <li>
-                <a th:href="@{/driver/dashboard}" th:classappend="${activeMenu == 'dashboard'} ? 'active' : ''" title="Dashboard">
-                    <i class="bi bi-grid-1x2"></i><span class="nav-text">Dashboard</span>
+                <a th:href="@{/driver/dashboard}" th:classappend="${activeMenu == 'driver-dashboard'} ? 'active' : ''" title="Driver Portal">
+                    <i class="bi bi-speedometer2"></i><span class="nav-text">Driver Portal</span>
                 </a>
             </li>
         </div>
