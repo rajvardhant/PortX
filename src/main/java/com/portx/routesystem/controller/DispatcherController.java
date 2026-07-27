@@ -2,8 +2,10 @@ package com.portx.routesystem.controller;
 
 import com.portx.routesystem.dto.DeliveryRequest;
 import com.portx.routesystem.dto.DeliveryResponse;
+import com.portx.routesystem.dto.VehicleResponse;
 import com.portx.routesystem.entity.DeliveryStatus;
 import com.portx.routesystem.service.DeliveryService;
+import com.portx.routesystem.service.VehicleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * DispatcherController — Backend REST API for Dispatcher Module.
  * Responsible for daily logistics operations: viewing orders, assigning drivers,
- * route optimization, active tracking, and reassigning drivers.
+ * vehicle availability checks, route optimization, active tracking, and reassigning drivers.
  */
 @RestController
 @RequestMapping("/api/dispatcher")
@@ -24,10 +26,16 @@ import java.util.stream.Collectors;
 public class DispatcherController {
 
     private final DeliveryService deliveryService;
+    private final VehicleService vehicleService;
 
     @GetMapping("/orders")
     public ResponseEntity<List<DeliveryResponse>> getOrders() {
         return ResponseEntity.ok(deliveryService.getAllDeliveries());
+    }
+
+    @GetMapping("/vehicles")
+    public ResponseEntity<List<VehicleResponse>> getAvailableVehicles() {
+        return ResponseEntity.ok(vehicleService.getAvailableVehicles());
     }
 
     @PutMapping("/orders/{id}/assign-driver")

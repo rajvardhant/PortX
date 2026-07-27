@@ -60,9 +60,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // Disable CSRF for REST API calls; Thymeleaf form requests retain protection
+            // Disable CSRF for REST API & web form endpoints
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/api/**")
+                .ignoringRequestMatchers("/api/**", "/driver/**", "/admin/**", "/dispatcher/**", "/invoices/**")
             )
             .authorizeHttpRequests(auth -> auth
                 // Publicly accessible pages & static assets

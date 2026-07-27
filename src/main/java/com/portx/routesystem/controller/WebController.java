@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
  * PURPOSE:
  * 1. Serves public landing page, services, login, and registration pages.
  * 2. Redirects users dynamically to Admin or Driver dashboards based on authenticated roles.
- * 3. Handles form POST actions for Drivers, Vehicles, Routes, Deliveries, and Invoices.
+ * 3. Handles form POST/GET actions for Drivers, Vehicles, Routes, Deliveries, and Invoices.
  */
 @Controller
 @RequiredArgsConstructor
@@ -341,8 +341,8 @@ public class WebController {
         return "driver/dashboard";
     }
 
-    /** Updates delivery status from Driver Portal */
-    @PostMapping("/driver/deliveries/{id}/status")
+    /** Updates delivery status from Driver Portal (supports GET and POST requests) */
+    @RequestMapping(value = "/driver/deliveries/{id}/status", method = {RequestMethod.GET, RequestMethod.POST})
     public String updateDriverDeliveryStatus(@PathVariable Long id, @RequestParam String status) {
         deliveryService.updateDeliveryStatus(id, status);
         return "redirect:/driver/dashboard";

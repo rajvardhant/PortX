@@ -26,6 +26,9 @@
           --accent-primary: #4f46e5;
           --btn-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
           --box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+          --pill-bg: #f1f5f9;
+          --pill-border: #cbd5e1;
+          --pill-text: #334155;
         }
 
         [data-theme="dark"], body[data-theme="dark"] {
@@ -41,6 +44,9 @@
           --accent-primary: #818cf8;
           --btn-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
           --box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+          --pill-bg: rgba(255, 255, 255, 0.06);
+          --pill-border: rgba(255, 255, 255, 0.12);
+          --pill-text: #cbd5e1;
         }
 
         body {
@@ -214,7 +220,33 @@
         .form-subtitle {
           color: var(--text-sub);
           font-size: 0.875rem;
-          margin-bottom: 1.25rem;
+          margin-bottom: 0.85rem;
+        }
+
+        .accelerator-title {
+          color: var(--accent-primary) !important;
+          font-weight: 800;
+          font-size: 0.75rem;
+          letter-spacing: 0.5px;
+        }
+
+        .role-pill-btn {
+          background: var(--pill-bg);
+          border: 1px solid var(--pill-border);
+          color: var(--pill-text);
+          border-radius: 0.6rem;
+          padding: 0.35rem 0.75rem;
+          font-size: 0.8rem;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .role-pill-btn:hover {
+          background: var(--btn-gradient);
+          border-color: transparent;
+          color: #ffffff;
+          transform: translateY(-1px);
         }
 
         .form-label {
@@ -413,7 +445,21 @@
 
                 <div class="mb-3">
                     <h2 class="form-title">Welcome Back</h2>
-                    <p class="form-subtitle">Enter your system credentials to access your portal</p>
+                    <p class="form-subtitle mb-2">Enter your system credentials to access your portal</p>
+
+                    <!-- Quick Demo Accounts Accelerator Pills -->
+                    <div class="d-flex align-items-center gap-2 mt-2 flex-wrap mb-2">
+                        <span class="accelerator-title">Demo Accounts:</span>
+                        <button type="button" class="role-pill-btn" onclick="fillCredentials('admin', 'admin123')">
+                            <i class="bi bi-shield-lock me-1"></i>Admin
+                        </button>
+                        <button type="button" class="role-pill-btn" onclick="fillCredentials('dispatcher', 'admin123')">
+                            <i class="bi bi-headset me-1"></i>Dispatcher
+                        </button>
+                        <button type="button" class="role-pill-btn" onclick="fillCredentials('driver1', 'admin123')">
+                            <i class="bi bi-truck me-1"></i>Driver
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Alert Messages -->
@@ -438,7 +484,7 @@
                         <label for="username" class="form-label">Username</label>
                         <div class="custom-input-group">
                             <i class="bi bi-person input-icon"></i>
-                            <input type="text" class="form-control-custom" id="username" name="username" placeholder="Enter your username" required autofocus>
+                            <input type="text" class="form-control-custom" id="username" name="username" placeholder="admin, dispatcher, or driver1" required autofocus>
                         </div>
                     </div>
 
@@ -526,6 +572,12 @@
             });
         }
     });
+
+    // Fill credentials helper for quick login accelerator
+    function fillCredentials(user, pwd) {
+        document.getElementById('username').value = user;
+        document.getElementById('password').value = pwd;
+    }
 </script>
 </body>
 </html>
