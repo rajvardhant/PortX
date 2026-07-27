@@ -461,7 +461,7 @@ body[data-theme="dark"] .table-hover tbody tr:hover td {
   border-radius: 0.85rem;
   font-weight: 600;
   font-size: 0.95rem;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .sidebar-nav a i {
@@ -469,18 +469,16 @@ body[data-theme="dark"] .table-hover tbody tr:hover td {
   margin-right: 0.85rem;
   min-width: 24px;
   text-align: center;
-  transition: transform 0.2s ease, color 0.2s ease;
+  transition: color 0.2s ease;
 }
 
 .sidebar-nav a:hover {
   background-color: var(--sidebar-hover-bg);
   color: var(--sidebar-hover-text);
-  transform: translateX(3px);
 }
 
 .sidebar-nav a:hover i {
   color: #818cf8;
-  transform: scale(1.1);
 }
 
 .sidebar-nav a.active {
