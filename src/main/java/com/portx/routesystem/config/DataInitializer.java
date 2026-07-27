@@ -16,7 +16,8 @@ import java.util.List;
 /**
  * DataInitializer — Runs on application startup.
  * Truncates database tables to reset AUTO_INCREMENT primary key counters back to 1
- * and populates EXACTLY 5 clean sample records in each category (IDs 1, 2, 3, 4, 5).
+ * and populates EXACTLY 5 clean sample records in each category (IDs 1, 2, 3, 4, 5),
+ * with real-time fleet synchronization (Vehicles IN_TRANSIT, Drivers ON_DUTY).
  */
 @Slf4j
 @Component
@@ -149,6 +150,15 @@ public class DataInitializer implements CommandLineRunner {
             Route assignedRoute = routes.get(i);
             DeliveryStatus delStatus = DeliveryStatus.valueOf(dData[3]);
 
+            // Sync Vehicle and Driver statuses according to initial delivery status
+            if (delStatus == DeliveryStatus.ASSIGNED || delStatus == DeliveryStatus.OUT_FOR_DELIVERY) {
+                assignedVehicle.setStatus(VehicleStatus.IN_TRANSIT);
+                vehicleRepository.save(assignedVehicle);
+
+                assignedDriver.setStatus(DriverStatus.ON_DUTY);
+                driverRepository.save(assignedDriver);
+            }
+
             Delivery delivery = deliveryRepository.save(Delivery.builder()
                     .customerName(dData[0])
                     .customerAddress(dData[1])
@@ -174,7 +184,7 @@ public class DataInitializer implements CommandLineRunner {
                     .remarks("Auto-generated invoice for Delivery #" + delivery.getDeliveryId())
                     .build());
         }
-        log.info("✅ 5 Sample Deliveries and Invoices initialized (IDs 1-5)");
+        log.info("✅ 5 Sample Deliveries initialized with synced Vehicle IN_TRANSIT and Driver ON_DUTY status");
 
         log.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         log.info("🚀 PortX Logistics ready → http://localhost:8080");

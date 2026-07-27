@@ -19,8 +19,10 @@ import java.util.stream.Collectors;
  *
  * PURPOSE:
  * 1. Manages delivery assignments (driver, vehicle, route).
- * 2. Auto-generates per-km Rupee (₹) GST Invoices upon creation.
- * 3. Automatically updates invoice status to PAID when a delivery is marked DELIVERED.
+ * 2. Synchronizes Vehicle status (IN_TRANSIT vs AVAILABLE) and Driver status (ON_DUTY vs AVAILABLE)
+ *    in real-time according to delivery progress.
+ * 3. Auto-generates per-km Rupee (₹) GST Invoices upon creation.
+ * 4. Automatically updates invoice status to PAID when a delivery is marked DELIVERED.
  */
 @Service
 @RequiredArgsConstructor
@@ -64,7 +66,7 @@ public class DeliveryService {
     }
 
     /**
-     * Creates a new Delivery record and auto-generates a billing invoice.
+     * Creates a new Delivery record, syncs fleet status, and auto-generates a billing invoice.
      */
     @Transactional
     public DeliveryResponse createDelivery(DeliveryRequest req) {
@@ -86,6 +88,8 @@ public class DeliveryService {
                     .orElseThrow(() -> new ResourceNotFoundException("Route", req.getRouteId()));
         }
 
+        DeliveryStatus initialStatus = req.getStatus() != null ? req.getStatus() : DeliveryStatus.PENDING;
+
         Delivery delivery = Delivery.builder()
                 .customerName(req.getCustomerName())
                 .customerAddress(req.getCustomerAddress())
@@ -94,10 +98,13 @@ public class DeliveryService {
                 .driver(driver)
                 .vehicle(vehicle)
                 .route(route)
-                .status(req.getStatus() != null ? req.getStatus() : DeliveryStatus.PENDING)
+                .status(initialStatus)
                 .build();
 
         Delivery saved = deliveryRepository.save(delivery);
+
+        // Synchronize vehicle and driver status according to delivery assignment
+        updateFleetStatusForDelivery(saved, initialStatus);
 
         // Auto-generate Rupee (₹) invoice for the created delivery
         createInvoiceForDelivery(saved);
@@ -107,6 +114,7 @@ public class DeliveryService {
 
     /**
      * Updates delivery status (PENDING -> ASSIGNED -> OUT_FOR_DELIVERY -> DELIVERED).
+     * Automatically syncs Vehicle (IN_TRANSIT vs AVAILABLE) and Driver (ON_DUTY vs AVAILABLE) status.
      * If status changes to DELIVERED, automatically marks invoice status to PAID.
      */
     @Transactional
@@ -117,6 +125,9 @@ public class DeliveryService {
         DeliveryStatus newStatus = DeliveryStatus.valueOf(status.toUpperCase());
         delivery.setStatus(newStatus);
         delivery.setUpdatedAt(LocalDateTime.now());
+
+        // Update assigned Vehicle and Driver status in real-time according to delivery progress
+        updateFleetStatusForDelivery(delivery, newStatus);
         
         Delivery saved = deliveryRepository.save(delivery);
         
@@ -132,7 +143,7 @@ public class DeliveryService {
     }
 
     /**
-     * Updates delivery details (customer, package weight, driver/vehicle assignments).
+     * Updates delivery details (customer, package weight, driver/vehicle assignments) and syncs fleet status.
      */
     @Transactional
     public DeliveryResponse updateDelivery(Long id, DeliveryRequest req) {
@@ -169,18 +180,55 @@ public class DeliveryService {
         }
         delivery.setUpdatedAt(LocalDateTime.now());
 
-        return mapToResponse(deliveryRepository.save(delivery));
+        Delivery saved = deliveryRepository.save(delivery);
+
+        // Update assigned Vehicle and Driver status according to current delivery progress
+        updateFleetStatusForDelivery(saved, saved.getStatus());
+
+        return mapToResponse(saved);
     }
 
     /**
-     * Deletes a delivery and unlinks its associated invoice safely.
+     * Deletes a delivery, frees its assigned vehicle/driver, and unlinks its associated invoice safely.
      */
     @Transactional
     public void deleteDelivery(Long id) {
         Delivery delivery = deliveryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Delivery", id));
+
+        // Revert assigned vehicle and driver back to AVAILABLE upon delivery deletion
+        updateFleetStatusForDelivery(delivery, DeliveryStatus.DELIVERED);
+
         invoiceRepository.findByDelivery_DeliveryId(id).ifPresent(invoiceRepository::delete);
         deliveryRepository.delete(delivery);
+    }
+
+    /**
+     * Helper method to synchronize Vehicle and Driver status in real-time based on delivery progress.
+     */
+    private void updateFleetStatusForDelivery(Delivery delivery, DeliveryStatus delStatus) {
+        Vehicle vehicle = delivery.getVehicle();
+        Driver driver = delivery.getDriver();
+
+        if (delStatus == DeliveryStatus.ASSIGNED || delStatus == DeliveryStatus.OUT_FOR_DELIVERY) {
+            if (vehicle != null) {
+                vehicle.setStatus(VehicleStatus.IN_TRANSIT);
+                vehicleRepository.save(vehicle);
+            }
+            if (driver != null) {
+                driver.setStatus(DriverStatus.ON_DUTY);
+                driverRepository.save(driver);
+            }
+        } else if (delStatus == DeliveryStatus.DELIVERED) {
+            if (vehicle != null) {
+                vehicle.setStatus(VehicleStatus.AVAILABLE);
+                vehicleRepository.save(vehicle);
+            }
+            if (driver != null) {
+                driver.setStatus(DriverStatus.AVAILABLE);
+                driverRepository.save(driver);
+            }
+        }
     }
 
     /**
