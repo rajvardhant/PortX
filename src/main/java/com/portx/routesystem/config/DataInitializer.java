@@ -11,12 +11,15 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * DataInitializer — Runs on startup.
- * Automatically migrates legacy database rows (BIKE -> VAN) and initializes
- * default system users with valid encoded passwords.
+ * Automatically cleans up duplicate routes, migrates legacy database rows (BIKE -> VAN),
+ * and initializes default system users with valid encoded passwords.
  */
 @Slf4j
 @Component
@@ -43,6 +46,42 @@ public class DataInitializer implements CommandLineRunner {
             }
         } catch (Exception e) {
             log.warn("Database cleanup notice: {}", e.getMessage());
+        }
+
+        // ── 0.1 Database Cleanup: Remove duplicate route records ─────────
+        try {
+            List<Route> allRoutes = routeRepository.findAll();
+            Map<String, Route> uniqueMap = new HashMap<>();
+            List<Route> duplicatesToDelete = new ArrayList<>();
+
+            for (Route r : allRoutes) {
+                if (r.getStartLocation() == null || r.getEndLocation() == null) continue;
+                String startKey = r.getStartLocation().trim().toLowerCase().replaceAll("[^a-z0-9]", "");
+                String endKey = r.getEndLocation().trim().toLowerCase().replaceAll("[^a-z0-9]", "");
+                String pairKey = startKey + "->" + endKey;
+
+                if (uniqueMap.containsKey(pairKey)) {
+                    // Unlink deliveries pointing to duplicate and point to primary route
+                    Route primaryRoute = uniqueMap.get(pairKey);
+                    List<Delivery> linkedDeliveries = deliveryRepository.findAll().stream()
+                            .filter(d -> d.getRoute() != null && d.getRoute().getRouteId().equals(r.getRouteId()))
+                            .collect(Collectors.toList());
+                    for (Delivery d : linkedDeliveries) {
+                        d.setRoute(primaryRoute);
+                        deliveryRepository.save(d);
+                    }
+                    duplicatesToDelete.add(r);
+                } else {
+                    uniqueMap.put(pairKey, r);
+                }
+            }
+
+            if (!duplicatesToDelete.isEmpty()) {
+                routeRepository.deleteAll(duplicatesToDelete);
+                log.info("🧹 Cleaned up {} duplicate route record(s) from database table", duplicatesToDelete.size());
+            }
+        } catch (Exception e) {
+            log.warn("Route deduplication startup notice: {}", e.getMessage());
         }
 
         // ── 1. Default System Users ──────────────────────────────────────

@@ -22,7 +22,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,10 +33,11 @@ import java.util.stream.Collectors;
  * RouteService — Business logic layer for route distance & travel duration calculations.
  *
  * PURPOSE:
- * 1. Geocodes start and destination locations using pre-mapped GPS city coordinates and Nominatim API.
- * 2. Computes realistic driving distances using Haversine spherical math with road curvature adjustments.
- * 3. Formats travel duration ("X hrs Y mins") for freight dispatch planning.
- * 4. Saves route entities safely without database truncation errors.
+ * 1. Checks system to prevent duplicate route records for identical start/end location pairs.
+ * 2. Geocodes start and destination locations using pre-mapped GPS city coordinates and Nominatim API.
+ * 3. Computes realistic driving distances using Haversine spherical math with road curvature adjustments.
+ * 4. Formats travel duration ("X hrs Y mins") for freight dispatch planning.
+ * 5. Saves route entities safely without database truncation errors.
  */
 @Slf4j
 @Service
@@ -51,23 +54,40 @@ public class RouteService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
-     * Generates a new Route entity from user-input start & end location strings.
+     * Generates a new Route entity OR reuses an existing route if the normalized start/end location pair already exists.
      */
     @Transactional
     public RouteResponse generateRoute(RouteRequest req) {
-        log.info("📍 Generating route between '{}' and '{}'", req.getStartLocation(), req.getEndLocation());
+        String start = req.getStartLocation() != null ? req.getStartLocation().trim() : "";
+        String end = req.getEndLocation() != null ? req.getEndLocation().trim() : "";
 
-        // Step 1: Obtain GPS latitude/longitude for pickup and destination
-        double[] startCoords = geocodeLocation(req.getStartLocation());
-        double[] endCoords = geocodeLocation(req.getEndLocation());
+        String normalizedStart = normalizeLocationKey(start);
+        String normalizedEnd = normalizeLocationKey(end);
 
-        // Step 2: Compute realistic road distance (km) and travel duration
+        log.info("📍 Checking route existence between '{}' and '{}'", start, end);
+
+        // Step 1: Check existing routes in database table using normalized location keys
+        List<Route> allRoutes = routeRepository.findAll();
+        for (Route r : allRoutes) {
+            String existingStart = normalizeLocationKey(r.getStartLocation());
+            String existingEnd = normalizeLocationKey(r.getEndLocation());
+            if (existingStart.equalsIgnoreCase(normalizedStart) && existingEnd.equalsIgnoreCase(normalizedEnd)) {
+                log.info("♻️ Existing route found in database ID: {}. Reusing without creating duplicate.", r.getRouteId());
+                return mapToResponse(r);
+            }
+        }
+
+        // Step 2: Obtain GPS latitude/longitude for pickup and destination
+        double[] startCoords = geocodeLocation(start);
+        double[] endCoords = geocodeLocation(end);
+
+        // Step 3: Compute realistic road distance (km) and travel duration
         Map<String, Object> distanceDetails = calculateRoadDistance(startCoords, endCoords);
 
-        // Step 3: Build Route entity for database persistence
+        // Step 4: Build Route entity for database persistence
         Route route = Route.builder()
-                .startLocation(req.getStartLocation().trim())
-                .endLocation(req.getEndLocation().trim())
+                .startLocation(start)
+                .endLocation(end)
                 .startLat(startCoords[0])
                 .startLng(startCoords[1])
                 .endLat(endCoords[0])
@@ -83,10 +103,20 @@ public class RouteService {
     }
 
     /**
-     * Retrieves all active and saved routes in the system.
+     * Retrieves all unique saved routes in the system, filtering out any duplicate entries.
      */
     public List<RouteResponse> getAllRoutes() {
-        return routeRepository.findAll().stream()
+        List<Route> allRoutes = routeRepository.findAll();
+        Map<String, Route> uniqueMap = new LinkedHashMap<>();
+
+        for (Route r : allRoutes) {
+            String key = normalizeLocationKey(r.getStartLocation()) + "->" + normalizeLocationKey(r.getEndLocation());
+            if (!uniqueMap.containsKey(key)) {
+                uniqueMap.put(key, r);
+            }
+        }
+
+        return uniqueMap.values().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
@@ -119,6 +149,14 @@ public class RouteService {
 
         // Step 2: Delete route from database
         routeRepository.delete(route);
+    }
+
+    /**
+     * Normalizes location strings for accurate deduplication comparison (e.g. "Surat, Gujarat" -> "surat").
+     */
+    private String normalizeLocationKey(String loc) {
+        if (loc == null) return "";
+        return loc.trim().toLowerCase().replaceAll("[^a-z0-9]", "");
     }
 
     /**
