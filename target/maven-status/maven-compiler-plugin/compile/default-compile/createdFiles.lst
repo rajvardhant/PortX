@@ -1,9 +1,12 @@
 com\portx\routesystem\controller\AuthController.class
 com\portx\routesystem\config\DataInitializer.class
+com\portx\routesystem\dto\DispatcherResponse$DispatcherResponseBuilder.class
 com\portx\routesystem\repository\DriverRepository.class
 com\portx\routesystem\dto\VehicleResponse.class
 com\portx\routesystem\repository\InvoiceRepository.class
+com\portx\routesystem\dto\DispatcherResponse.class
 com\portx\routesystem\dto\DashboardStats$DashboardStatsBuilder.class
+com\portx\routesystem\dto\DispatcherRequest.class
 com\portx\routesystem\dto\DashboardStats.class
 com\portx\routesystem\dto\AuthResponse$AuthResponseBuilder.class
 com\portx\routesystem\entity\Vehicle.class
@@ -17,6 +20,7 @@ com\portx\routesystem\dto\InvoiceResponse.class
 com\portx\routesystem\entity\User$UserBuilder.class
 com\portx\routesystem\dto\DriverResponse.class
 com\portx\routesystem\exception\ResourceNotFoundException.class
+com\portx\routesystem\service\DispatcherService.class
 com\portx\routesystem\dto\DeliveryRequest.class
 com\portx\routesystem\entity\DriverStatus.class
 com\portx\routesystem\service\InvoiceService.class
@@ -24,6 +28,7 @@ com\portx\routesystem\RouteSystemApplication.class
 com\portx\routesystem\entity\Route$RouteBuilder.class
 com\portx\routesystem\service\DashboardService.class
 com\portx\routesystem\service\VehicleService.class
+com\portx\routesystem\dto\DispatcherRequest$DispatcherRequestBuilder.class
 com\portx\routesystem\entity\Invoice.class
 com\portx\routesystem\controller\DispatcherController.class
 com\portx\routesystem\entity\VehicleType.class

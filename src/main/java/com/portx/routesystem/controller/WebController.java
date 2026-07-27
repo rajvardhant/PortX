@@ -1,11 +1,6 @@
 package com.portx.routesystem.controller;
 
-import com.portx.routesystem.dto.DeliveryRequest;
-import com.portx.routesystem.dto.DeliveryResponse;
-import com.portx.routesystem.dto.DriverRequest;
-import com.portx.routesystem.dto.DriverResponse;
-import com.portx.routesystem.dto.VehicleRequest;
-import com.portx.routesystem.dto.VehicleResponse;
+import com.portx.routesystem.dto.*;
 import com.portx.routesystem.entity.DeliveryStatus;
 import com.portx.routesystem.entity.Driver;
 import com.portx.routesystem.entity.User;
@@ -29,13 +24,14 @@ import java.util.stream.Collectors;
  * PURPOSE:
  * 1. Serves public landing page, services, login, and registration pages.
  * 2. Redirects users dynamically to Admin or Driver dashboards based on authenticated roles.
- * 3. Handles form POST/GET actions for Drivers, Vehicles, Routes, Deliveries, and Invoices.
+ * 3. Handles form POST/GET actions for Dispatchers, Drivers, Vehicles, Routes, Deliveries, and Invoices.
  */
 @Controller
 @RequiredArgsConstructor
 public class WebController {
 
     // Inject service layer components for business logic and model binding
+    private final DispatcherService dispatcherService;
     private final DriverService driverService;
     private final VehicleService vehicleService;
     private final RouteService routeService;
@@ -117,6 +113,61 @@ public class WebController {
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // DISPATCHER MANAGEMENT (ADMIN ONLY CRUD)
+    // ────────────────────────────────────────────────────────────────────────
+
+    /** Displays dispatchers directory table */
+    @GetMapping("/admin/dispatchers")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String listDispatchers(Model model) {
+        model.addAttribute("dispatchers", dispatcherService.getAllDispatchers());
+        return "admin/dispatchers";
+    }
+
+    /** Opens Add Dispatcher form */
+    @GetMapping("/admin/dispatchers/new")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String newDispatcherForm(Model model) {
+        model.addAttribute("dispatcherRequest", new DispatcherRequest());
+        return "admin/dispatcher-form";
+    }
+
+    /** Opens Edit Dispatcher form */
+    @GetMapping("/admin/dispatchers/{id}/edit")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String editDispatcherForm(@PathVariable Long id, Model model) {
+        DispatcherResponse resp = dispatcherService.getDispatcherById(id);
+        DispatcherRequest request = DispatcherRequest.builder()
+                .id(resp.getUserId())
+                .fullName(resp.getFullName())
+                .username(resp.getUsername())
+                .email(resp.getEmail())
+                .build();
+        model.addAttribute("dispatcherRequest", request);
+        return "admin/dispatcher-form";
+    }
+
+    /** Saves new or updated Dispatcher account */
+    @PostMapping("/admin/dispatchers/save")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String saveDispatcher(@ModelAttribute("dispatcherRequest") DispatcherRequest request) {
+        if (request.getId() != null) {
+            dispatcherService.updateDispatcher(request.getId(), request);
+        } else {
+            dispatcherService.createDispatcher(request);
+        }
+        return "redirect:/admin/dispatchers";
+    }
+
+    /** Deletes Dispatcher account */
+    @PostMapping("/admin/dispatchers/{id}/delete")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String deleteDispatcher(@PathVariable Long id) {
+        dispatcherService.deleteDispatcher(id);
+        return "redirect:/admin/dispatchers";
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // DRIVER MANAGEMENT (CRUD)
     // ────────────────────────────────────────────────────────────────────────
 
@@ -148,7 +199,7 @@ public class WebController {
         request.setLicenseNumber(resp.getLicenseNumber());
         request.setStatus(resp.getStatus());
         request.setVehicleId(resp.getVehicleId());
-        request.setUsername(resp.getUserUsername()); // Pre-fill driver username
+        request.setUsername(resp.getUserUsername());
 
         model.addAttribute("driverRequest", request);
         model.addAttribute("vehicles", vehicleService.getAllVehicles());

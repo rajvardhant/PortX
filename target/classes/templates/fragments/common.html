@@ -12,8 +12,8 @@
     <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Custom CSS & Theme System -->
-    <link href="/css/style.css?v=1.1.0" rel="stylesheet">
-    <link href="/css/print.css?v=1.1.0" rel="stylesheet" media="print">
+    <link href="/css/style.css?v=1.1.1" rel="stylesheet">
+    <link href="/css/print.css?v=1.1.1" rel="stylesheet" media="print">
 </head>
 <body>
 
@@ -40,6 +40,12 @@
                 </a>
             </li>
             
+            <li sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/admin/dispatchers}" th:classappend="${activeMenu == 'dispatchers'} ? 'active' : ''" title="Dispatchers">
+                    <i class="bi bi-headset"></i><span class="nav-text">Dispatchers</span>
+                </a>
+            </li>
+
             <li sec:authorize="hasRole('ADMIN')">
                 <a th:href="@{/admin/drivers}" th:classappend="${activeMenu == 'drivers'} ? 'active' : ''" title="Drivers">
                     <i class="bi bi-person-badge"></i><span class="nav-text">Drivers</span>

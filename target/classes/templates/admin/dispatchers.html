@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head('Dispatchers Management')}"></head>
+<body>
+
+<nav th:replace="~{fragments/common :: sidebar('dispatchers')}"></nav>
+<div class="main-wrapper">
+    <nav th:replace="~{fragments/common :: navbar('Dispatchers Management')}"></nav>
+    
+    <div class="content-area">
+        <div class="fade-in">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <div>
+                    <h4 class="fw-bold mb-0">Dispatchers</h4>
+                    <p class="text-muted small mb-0">Create and manage Dispatcher accounts responsible for daily logistics operations.</p>
+                </div>
+                <a th:href="@{/admin/dispatchers/new}" class="btn btn-primary shadow-sm fw-semibold">
+                    <i class="bi bi-plus-lg me-2"></i>Add Dispatcher
+                </a>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-transparent p-3 border-bottom d-flex justify-content-between align-items-center">
+                    <div class="input-group" style="max-width: 340px; width: 100%;">
+                        <span class="input-group-text border-end-0"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control border-start-0 table-search-input" placeholder="Search dispatchers by name, username, email...">
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4">ID</th>
+                                    <th>Full Name</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th class="text-end pe-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="dispatcher : ${dispatchers}">
+                                    <td class="ps-4 fw-bold" th:text="${dispatcher.userId}">1</td>
+                                    <td class="fw-bold text-primary" th:text="${dispatcher.fullName}">John Dispatcher</td>
+                                    <td>
+                                        <span class="badge bg-indigo-subtle text-indigo px-2 py-1 border border-indigo-subtle">
+                                            <i class="bi bi-person-badge me-1"></i><span th:text="${dispatcher.username}">dispatcher</span>
+                                        </span>
+                                    </td>
+                                    <td class="fw-medium" th:text="${dispatcher.email}">dispatcher@portx.com</td>
+                                    <td>
+                                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1">DISPATCHER</span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="action-btn-group">
+                                            <a th:href="@{/admin/dispatchers/{id}/edit(id=${dispatcher.userId})}" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form th:action="@{/admin/dispatchers/{id}/delete(id=${dispatcher.userId})}" method="post" class="d-inline m-0" onsubmit="return confirm('Are you sure you want to delete this Dispatcher account?');">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(dispatchers)}" class="empty-table-row">
+                                    <td colspan="6" class="text-center py-5 text-muted">
+                                        <i class="bi bi-headset fs-1 d-block mb-3"></i>
+                                        No dispatchers found. Click 'Add Dispatcher' to create one.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/common :: scripts}"></th:block>
+</body>
+</html>
