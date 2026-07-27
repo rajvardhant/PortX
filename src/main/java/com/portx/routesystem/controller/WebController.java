@@ -6,6 +6,7 @@ import com.portx.routesystem.dto.DriverRequest;
 import com.portx.routesystem.dto.DriverResponse;
 import com.portx.routesystem.dto.VehicleRequest;
 import com.portx.routesystem.dto.VehicleResponse;
+import com.portx.routesystem.entity.DeliveryStatus;
 import com.portx.routesystem.entity.Driver;
 import com.portx.routesystem.entity.User;
 import com.portx.routesystem.repository.DriverRepository;
@@ -18,6 +19,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * WebController — Main MVC Controller handling page navigation and HTML form submissions.
@@ -312,10 +316,10 @@ public class WebController {
     }
 
     // ────────────────────────────────────────────────────────────────────────
-    // DRIVER PORTAL
+    // DRIVER PORTAL & HISTORY
     // ────────────────────────────────────────────────────────────────────────
 
-    /** Serves Driver Portal showing assigned deliveries for logged-in driver */
+    /** Serves Driver Portal showing active assigned deliveries for logged-in driver */
     @GetMapping("/driver/dashboard")
     public String driverDashboard(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -329,16 +333,59 @@ public class WebController {
                     .orElse(null);
                     
             if (driver != null) {
-                model.addAttribute("deliveries", deliveryService.getDeliveriesByDriver(driver.getDriverId()));
+                List<DeliveryResponse> activeDeliveries = deliveryService.getDeliveriesByDriver(driver.getDriverId()).stream()
+                        .filter(d -> d.getStatus() != DeliveryStatus.DELIVERED)
+                        .collect(Collectors.toList());
+                model.addAttribute("deliveries", activeDeliveries);
                 model.addAttribute("driver", driver);
             } else {
-                model.addAttribute("deliveries", deliveryService.getAllDeliveries());
+                List<DeliveryResponse> activeDeliveries = deliveryService.getAllDeliveries().stream()
+                        .filter(d -> d.getStatus() != DeliveryStatus.DELIVERED)
+                        .collect(Collectors.toList());
+                model.addAttribute("deliveries", activeDeliveries);
             }
         } else {
-            model.addAttribute("deliveries", deliveryService.getAllDeliveries());
+            List<DeliveryResponse> activeDeliveries = deliveryService.getAllDeliveries().stream()
+                    .filter(d -> d.getStatus() != DeliveryStatus.DELIVERED)
+                    .collect(Collectors.toList());
+            model.addAttribute("deliveries", activeDeliveries);
         }
         
         return "driver/dashboard";
+    }
+
+    /** Serves Driver Delivery History showing completed shipments */
+    @GetMapping("/driver/history")
+    public String driverHistory(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        User user = userRepository.findByUsername(username).orElse(null);
+        
+        List<DeliveryResponse> completedDeliveries;
+        if (user != null) {
+            Driver driver = driverRepository.findAll().stream()
+                    .filter(d -> d.getUser() != null && d.getUser().getUserId().equals(user.getUserId()))
+                    .findFirst()
+                    .orElse(null);
+                    
+            if (driver != null) {
+                completedDeliveries = deliveryService.getDeliveriesByDriver(driver.getDriverId()).stream()
+                        .filter(d -> d.getStatus() == DeliveryStatus.DELIVERED)
+                        .collect(Collectors.toList());
+                model.addAttribute("driver", driver);
+            } else {
+                completedDeliveries = deliveryService.getAllDeliveries().stream()
+                        .filter(d -> d.getStatus() == DeliveryStatus.DELIVERED)
+                        .collect(Collectors.toList());
+            }
+        } else {
+            completedDeliveries = deliveryService.getAllDeliveries().stream()
+                    .filter(d -> d.getStatus() == DeliveryStatus.DELIVERED)
+                    .collect(Collectors.toList());
+        }
+        
+        model.addAttribute("completedDeliveries", completedDeliveries);
+        return "driver/history";
     }
 
     /** Updates delivery status from Driver Portal (supports GET and POST requests) */
