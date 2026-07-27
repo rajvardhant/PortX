@@ -69,18 +69,18 @@
                                         </div>
                                     </div>
 
-                                    <!-- Interactive Per-KM Price Calculator -->
+                                    <!-- Dynamic Per-KM Fare Estimator -->
                                     <div class="p-3 bg-white rounded-3 border" style="background-color: var(--card-bg) !important; border-color: var(--card-border) !important;">
                                         <h6 class="fw-bold mb-2 small" style="color: var(--text-main) !important;"><i class="bi bi-currency-rupee text-success"></i> Per-KM Fare Estimator</h6>
                                         <div class="row g-2 align-items-center mb-2">
-                                            <div class="col-6 small" style="color: var(--text-sub) !important;">Rate Per KM:</div>
+                                            <div class="col-6 small" style="color: var(--text-sub) !important;">Rate Per KM (₹):</div>
                                             <div class="col-6 text-end">
-                                                <input type="number" id="ratePerKm" class="form-control form-control-sm text-end fw-bold" value="15" min="1" oninput="updateFarePrice()">
+                                                <input type="number" id="ratePerKm" class="form-control form-control-sm text-end fw-bold" value="15" min="1" step="1" oninput="updateFarePrice()" onkeyup="updateFarePrice()" onchange="updateFarePrice()">
                                             </div>
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center pt-2 border-top">
                                             <span class="fw-bold small" style="color: var(--text-main) !important;">Estimated Freight Cost:</span>
-                                            <span class="fs-5 fw-extrabold text-success" id="result-price">₹ 0.00</span>
+                                            <span class="fs-4 fw-extrabold text-success" id="result-price">₹ 0.00</span>
                                         </div>
                                     </div>
                                 </div>
@@ -93,7 +93,7 @@
                     </div>
                 </div>
 
-                <!-- Right Side: Simple Map Preview -->
+                <!-- Right Side: Map Preview -->
                 <div class="col-lg-6">
                     <div class="card shadow-sm border-0 h-100">
                         <div class="card-header bg-white p-3 border-bottom">
@@ -114,13 +114,16 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="/js/map.js"></script>
 <script>
-    let currentDistanceKm = 0;
-
+    // Real-time per-KM freight fare calculation before saving route
     function updateFarePrice() {
-        const rate = parseFloat(document.getElementById('ratePerKm').value) || 15;
-        const baseFee = 100;
-        const total = baseFee + (currentDistanceKm * rate);
-        document.getElementById('result-price').textContent = '₹ ' + total.toFixed(2);
+        const distText = document.getElementById('result-distance').textContent || '0';
+        const dist = parseFloat(distText.replace(/[^0-9.]/g, '')) || window.currentDistanceKm || 0;
+        
+        const rate = parseFloat(document.getElementById('ratePerKm').value) || 0;
+        const baseFee = 100; // Base dispatch booking fee
+        
+        const total = baseFee + (dist * rate);
+        document.getElementById('result-price').textContent = '₹ ' + total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 </script>
 </body>
