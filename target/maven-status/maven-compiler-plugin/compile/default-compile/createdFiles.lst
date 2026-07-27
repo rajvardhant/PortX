@@ -29,6 +29,7 @@ com\portx\routesystem\controller\DispatcherController.class
 com\portx\routesystem\entity\VehicleType.class
 com\portx\routesystem\entity\DeliveryStatus.class
 com\portx\routesystem\service\RouteService.class
+com\portx\routesystem\dto\DriverRequest$DriverRequestBuilder.class
 com\portx\routesystem\dto\RegisterRequest.class
 com\portx\routesystem\controller\VehicleController.class
 com\portx\routesystem\entity\Invoice$InvoiceBuilder.class

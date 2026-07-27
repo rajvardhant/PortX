@@ -124,7 +124,7 @@ public class WebController {
     @GetMapping("/admin/drivers")
     public String listDrivers(Model model) {
         model.addAttribute("drivers", driverService.getAllDrivers());
-        model.addAttribute("vehicles", vehicleService.getAvailableVehicles());
+        model.addAttribute("vehicles", vehicleService.getAllVehicles());
         return "admin/drivers";
     }
 
@@ -133,7 +133,7 @@ public class WebController {
     public String newDriverForm(Model model) {
         DriverRequest request = new DriverRequest();
         model.addAttribute("driverRequest", request);
-        model.addAttribute("vehicles", vehicleService.getAvailableVehicles());
+        model.addAttribute("vehicles", vehicleService.getAllVehicles());
         return "admin/driver-form";
     }
 
@@ -148,6 +148,7 @@ public class WebController {
         request.setLicenseNumber(resp.getLicenseNumber());
         request.setStatus(resp.getStatus());
         request.setVehicleId(resp.getVehicleId());
+        request.setUsername(resp.getUserUsername()); // Pre-fill driver username
 
         model.addAttribute("driverRequest", request);
         model.addAttribute("vehicles", vehicleService.getAllVehicles());

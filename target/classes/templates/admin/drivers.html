@@ -30,6 +30,7 @@
                                 <tr>
                                     <th class="ps-4">ID</th>
                                     <th>Name</th>
+                                    <th>Login Account</th>
                                     <th>Phone</th>
                                     <th>License No</th>
                                     <th>Vehicle</th>
@@ -41,6 +42,14 @@
                                 <tr th:each="driver : ${drivers}">
                                     <td class="ps-4 fw-bold" th:text="${driver.driverId}">1</td>
                                     <td class="fw-bold" th:text="${driver.name}">John Doe</td>
+                                    <td>
+                                        <span th:if="${driver.userUsername != null}" class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1">
+                                            <i class="bi bi-person-check me-1"></i><span th:text="${driver.userUsername}">driver1</span>
+                                        </span>
+                                        <span th:if="${driver.userUsername == null}" class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-2 py-1">
+                                            <i class="bi bi-person-x me-1"></i>No Login Account
+                                        </span>
+                                    </td>
                                     <td class="fw-medium" th:text="${driver.phone}">+1 234 567 890</td>
                                     <td class="fw-medium" th:text="${driver.licenseNumber}">LIC-1234</td>
                                     <td class="fw-medium" th:text="${driver.vehicleRegistrationNumber != null ? driver.vehicleRegistrationNumber : 'Not Assigned'}">Not Assigned</td>
@@ -61,7 +70,7 @@
                                     </td>
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(drivers)}" class="empty-table-row">
-                                    <td colspan="7" class="text-center py-5 text-muted">
+                                    <td colspan="8" class="text-center py-5 text-muted">
                                         <i class="bi bi-person-x fs-1 d-block mb-3"></i>
                                         No drivers found. Click 'Add Driver' to create one.
                                     </td>

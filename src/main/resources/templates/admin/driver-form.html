@@ -54,6 +54,33 @@
                                             <option th:each="v : ${vehicles}" th:value="${v.vehicleId}" th:text="${v.registrationNumber + ' (' + v.vehicleType + ' - Cap: ' + v.capacity + 'kg)'}"></option>
                                         </select>
                                     </div>
+
+                                    <!-- Driver Portal Login Credentials Card Section -->
+                                    <div class="col-12 mt-4 pt-4 border-top">
+                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                            <i class="bi bi-person-lock text-primary fs-5"></i>
+                                            <h6 class="fw-bold mb-0 text-primary">Driver Portal Login Credentials</h6>
+                                        </div>
+                                        <p class="text-muted small mb-3">Set up a unique username and password so this driver can sign in to the Driver Portal and manage assigned deliveries.</p>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="username" class="form-label fw-semibold">Login Username</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                                    <input type="text" class="form-control" id="username" th:field="*{username}" placeholder="e.g. driver2 or rahul_driver">
+                                                </div>
+                                                <div class="form-text text-muted small">Unique username for login.</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="password" class="form-label fw-semibold">Login Password</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="bi bi-key"></i></span>
+                                                    <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Set password (e.g. admin123)">
+                                                </div>
+                                                <div class="form-text text-muted small">Leave blank when editing to keep current password.</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 
                                 <div class="mt-5 d-flex gap-3">
