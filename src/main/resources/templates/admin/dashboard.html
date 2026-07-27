@@ -12,7 +12,7 @@
             <!-- Stats Row 1 -->
             <div class="row g-4 mb-4">
                 <div class="col-xl-3 col-md-6">
-                    <div class="card stat-card" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">
+                    <a th:href="@{/admin/drivers}" class="card stat-card text-decoration-none" style="background: linear-gradient(135deg, #6366f1, #4f46e5);" title="Click to view all Drivers">
                         <div class="card-body">
                             <div>
                                 <div class="stat-value" th:text="${stats?.totalDrivers ?: 0}">0</div>
@@ -20,10 +20,10 @@
                             </div>
                         </div>
                         <i class="bi bi-person-badge stat-card-icon"></i>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-xl-3 col-md-6">
-                    <div class="card stat-card" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                    <a th:href="@{/admin/vehicles}" class="card stat-card text-decoration-none" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);" title="Click to view all Vehicles">
                         <div class="card-body">
                             <div>
                                 <div class="stat-value" th:text="${stats?.totalVehicles ?: 0}">0</div>
@@ -31,10 +31,10 @@
                             </div>
                         </div>
                         <i class="bi bi-truck-front stat-card-icon"></i>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-xl-3 col-md-6">
-                    <div class="card stat-card" style="background: linear-gradient(135deg, #0284c7, #0369a1);">
+                    <a th:href="@{/dispatcher/deliveries}" class="card stat-card text-decoration-none" style="background: linear-gradient(135deg, #0284c7, #0369a1);" title="Click to view all Deliveries">
                         <div class="card-body">
                             <div>
                                 <div class="stat-value" th:text="${stats?.totalDeliveries ?: 0}">0</div>
@@ -42,10 +42,10 @@
                             </div>
                         </div>
                         <i class="bi bi-box-seam stat-card-icon"></i>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-xl-3 col-md-6">
-                    <div class="card stat-card" style="background: linear-gradient(135deg, #d97706, #b45309);">
+                    <a th:href="@{/dispatcher/deliveries}" class="card stat-card text-decoration-none" style="background: linear-gradient(135deg, #d97706, #b45309);" title="Click to view Pending Deliveries">
                         <div class="card-body">
                             <div>
                                 <div class="stat-value" th:text="${stats?.pendingDeliveries ?: 0}">0</div>
@@ -53,14 +53,14 @@
                             </div>
                         </div>
                         <i class="bi bi-hourglass-split stat-card-icon"></i>
-                    </div>
+                    </a>
                 </div>
             </div>
 
             <!-- Stats Row 2 -->
             <div class="row g-4 mb-4">
                 <div class="col-xl-3 col-md-6">
-                    <div class="card stat-card" style="background: linear-gradient(135deg, #ea580c, #c2410c);">
+                    <a th:href="@{/dispatcher/deliveries}" class="card stat-card text-decoration-none" style="background: linear-gradient(135deg, #ea580c, #c2410c);" title="Click to view Ongoing Deliveries">
                         <div class="card-body">
                             <div>
                                 <div class="stat-value" th:text="${stats?.ongoingDeliveries ?: 0}">0</div>
@@ -68,10 +68,10 @@
                             </div>
                         </div>
                         <i class="bi bi-arrow-repeat stat-card-icon"></i>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-xl-3 col-md-6">
-                    <div class="card stat-card" style="background: linear-gradient(135deg, #059669, #047857);">
+                    <a th:href="@{/dispatcher/deliveries}" class="card stat-card text-decoration-none" style="background: linear-gradient(135deg, #059669, #047857);" title="Click to view Completed Deliveries">
                         <div class="card-body">
                             <div>
                                 <div class="stat-value" th:text="${stats?.completedDeliveries ?: 0}">0</div>
@@ -79,10 +79,10 @@
                             </div>
                         </div>
                         <i class="bi bi-check-circle stat-card-icon"></i>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-xl-3 col-md-6">
-                    <div class="card stat-card" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                    <a th:href="@{/invoices}" class="card stat-card text-decoration-none" style="background: linear-gradient(135deg, #dc2626, #b91c1c);" title="Click to view Pending Invoices">
                         <div class="card-body">
                             <div>
                                 <div class="stat-value" th:text="${stats?.pendingInvoices ?: 0}">0</div>
@@ -90,10 +90,10 @@
                             </div>
                         </div>
                         <i class="bi bi-receipt stat-card-icon"></i>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-xl-3 col-md-6">
-                    <div class="card stat-card" style="background: linear-gradient(135deg, #0d9488, #0f766e);">
+                    <a th:href="@{/invoices}" class="card stat-card text-decoration-none" style="background: linear-gradient(135deg, #0d9488, #0f766e);" title="Click to view Paid Invoices">
                         <div class="card-body">
                             <div>
                                 <div class="stat-value" th:text="${stats?.completedInvoices ?: 0}">0</div>
@@ -101,7 +101,7 @@
                             </div>
                         </div>
                         <i class="bi bi-receipt-cutoff stat-card-icon"></i>
-                    </div>
+                    </a>
                 </div>
             </div>
 
