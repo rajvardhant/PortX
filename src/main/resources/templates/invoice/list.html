@@ -1,23 +1,39 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/common :: head('Invoices Management')}"></head>
+<head th:replace="~{fragments/common :: head('Invoices Directory')}"></head>
 <body>
 
 <nav th:replace="~{fragments/common :: sidebar('invoices')}"></nav>
 <div class="main-wrapper">
-    <nav th:replace="~{fragments/common :: navbar('Invoices Management')}"></nav>
+    <nav th:replace="~{fragments/common :: navbar('Invoices Directory')}"></nav>
     
     <div class="content-area">
         <div class="fade-in">
-            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-                <h4 class="fw-bold mb-0">Invoices</h4>
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div>
+                    <h4 class="fw-bold mb-0">Invoices</h4>
+                    <p class="text-muted small mb-0">Auto-generated Rupee (₹) GST invoices calculated per kilometer.</p>
+                </div>
+            </div>
+
+            <!-- Filter Tab Pills Bar -->
+            <div class="filter-tab-group mb-3">
+                <button type="button" class="btn filter-tab active" data-filter="all">
+                    <i class="bi bi-grid-fill me-1"></i>All <span class="badge bg-secondary bg-opacity-25 text-secondary ms-1">0</span>
+                </button>
+                <button type="button" class="btn filter-tab" data-filter="PENDING">
+                    <i class="bi bi-clock-history text-warning me-1"></i>Pending <span class="badge bg-warning bg-opacity-25 text-warning ms-1">0</span>
+                </button>
+                <button type="button" class="btn filter-tab" data-filter="PAID">
+                    <i class="bi bi-check-circle-fill text-success me-1"></i>Paid <span class="badge bg-success bg-opacity-25 text-success ms-1">0</span>
+                </button>
             </div>
 
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-transparent p-3 border-bottom d-flex justify-content-between align-items-center">
                     <div class="input-group" style="max-width: 340px; width: 100%;">
                         <span class="input-group-text border-end-0"><i class="bi bi-search"></i></span>
-                        <input type="text" class="form-control border-start-0 table-search-input" placeholder="Search invoices by invoice #, customer, status...">
+                        <input type="text" class="form-control border-start-0 table-search-input" placeholder="Search invoices by customer, ID...">
                     </div>
                 </div>
                 <div class="card-body p-0">
@@ -25,9 +41,9 @@
                         <table class="table table-hover mb-0 align-middle">
                             <thead>
                                 <tr>
-                                    <th class="ps-4">Invoice #</th>
+                                    <th class="ps-4">Invoice ID</th>
                                     <th>Delivery ID</th>
-                                    <th>Customer</th>
+                                    <th>Customer Name</th>
                                     <th>Date</th>
                                     <th>Amount (₹)</th>
                                     <th>Status</th>
@@ -35,25 +51,24 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="invoice : ${invoices}">
-                                    <td class="ps-4 fw-bold" th:text="${'INV-' + invoice.invoiceId}">INV-1</td>
+                                <tr th:each="invoice : ${invoices}" 
+                                    th:attr="data-status=${invoice.status}">
+                                    <td class="ps-4 fw-bold" th:text="${'#INV-' + invoice.invoiceId}">#INV-1</td>
+                                    <td class="fw-medium" th:text="${'#DEL-' + invoice.deliveryId}">#DEL-1</td>
+                                    <td class="fw-bold" th:text="${invoice.customerName}">John Smith</td>
+                                    <td class="fw-medium" th:text="${invoice.invoiceDate}">2026-07-25</td>
+                                    <td class="fw-extrabold text-primary" th:text="${'₹ ' + #numbers.formatDecimal(invoice.amount, 1, 2)}">₹ 285.00</td>
                                     <td>
-                                        <span class="fw-bold text-primary" th:text="${'#DEL-' + invoice.deliveryId}">#DEL-1</span>
-                                    </td>
-                                    <td class="fw-bold" th:text="${invoice.customerName}">John Doe</td>
-                                    <td class="fw-medium" th:text="${invoice.invoiceDate}">Oct 01, 2026</td>
-                                    <td class="fw-extrabold text-success" th:text="${invoice.amount != null ? '₹ ' + #numbers.formatDecimal(invoice.amount, 1, 2) : '₹ 0.00'}">₹ 150.00</td>
-                                    <td>
-                                        <span class="badge" th:classappend="${invoice.status != null && invoice.status.name() == 'PAID' ? 'bg-paid' : 'bg-pending'}" th:text="${invoice.status}">PENDING</span>
+                                        <span class="badge" th:classappend="${invoice.status.name() == 'PAID' ? 'bg-paid' : 'bg-pending'}" th:text="${invoice.status}">PENDING</span>
                                     </td>
                                     <td class="text-end pe-4">
                                         <div class="action-btn-group">
-                                            <a th:href="@{/invoices/{id}(id=${invoice.invoiceId})}" class="btn btn-sm btn-primary text-white me-1 fw-semibold">
-                                                <i class="bi bi-eye me-1"></i> View
+                                            <a th:href="@{/invoices/{id}(id=${invoice.invoiceId})}" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="View Invoice">
+                                                <i class="bi bi-eye me-1"></i>View
                                             </a>
-                                            <form th:if="${invoice.status != null && invoice.status.name() == 'PENDING'}" th:action="@{/invoices/{id}/pay(id=${invoice.invoiceId})}" method="post" class="d-inline m-0">
-                                                <button type="submit" class="btn btn-sm btn-success text-white fw-semibold" onclick="return confirm('Mark this invoice as PAID?');">
-                                                    <i class="bi bi-check-lg me-1"></i> Pay
+                                            <form th:if="${invoice.status.name() == 'PENDING'}" th:action="@{/invoices/{id}/pay(id=${invoice.invoiceId})}" method="post" class="d-inline m-0">
+                                                <button type="submit" class="btn btn-sm btn-success" data-bs-toggle="tooltip" title="Mark Paid">
+                                                    <i class="bi bi-check-lg me-1"></i>Pay
                                                 </button>
                                             </form>
                                         </div>
@@ -62,7 +77,7 @@
                                 <tr th:if="${#lists.isEmpty(invoices)}" class="empty-table-row">
                                     <td colspan="7" class="text-center py-5 text-muted">
                                         <i class="bi bi-receipt fs-1 d-block mb-3"></i>
-                                        No invoices found. Invoices are generated automatically when a delivery is created.
+                                        No invoices found.
                                     </td>
                                 </tr>
                             </tbody>

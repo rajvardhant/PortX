@@ -9,7 +9,7 @@
     
     <div class="content-area">
         <div class="fade-in">
-            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                 <div>
                     <h4 class="fw-bold mb-0">Dispatchers</h4>
                     <p class="text-muted small mb-0">Create and manage Dispatcher accounts responsible for daily logistics operations.</p>
@@ -17,6 +17,16 @@
                 <a th:href="@{/admin/dispatchers/new}" class="btn btn-primary shadow-sm fw-semibold">
                     <i class="bi bi-plus-lg me-2"></i>Add Dispatcher
                 </a>
+            </div>
+
+            <!-- Filter Tab Pills Bar -->
+            <div class="filter-tab-group mb-3">
+                <button type="button" class="btn filter-tab active" data-filter="all">
+                    <i class="bi bi-grid-fill me-1"></i>All <span class="badge bg-secondary bg-opacity-25 text-secondary ms-1">0</span>
+                </button>
+                <button type="button" class="btn filter-tab" data-filter="DISPATCHER">
+                    <i class="bi bi-headset text-primary me-1"></i>Active Dispatchers <span class="badge bg-primary bg-opacity-25 text-primary ms-1">0</span>
+                </button>
             </div>
 
             <div class="card shadow-sm border-0">
@@ -40,11 +50,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="dispatcher : ${dispatchers}">
+                                <tr th:each="dispatcher : ${dispatchers}" 
+                                    th:attr="data-status=${dispatcher.role}">
                                     <td class="ps-4 fw-bold" th:text="${dispatcher.userId}">1</td>
                                     <td class="fw-bold text-primary" th:text="${dispatcher.fullName}">John Dispatcher</td>
                                     <td>
-                                        <span class="badge bg-indigo-subtle text-indigo px-2 py-1 border border-indigo-subtle">
+                                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1">
                                             <i class="bi bi-person-badge me-1"></i><span th:text="${dispatcher.username}">dispatcher</span>
                                         </span>
                                     </td>

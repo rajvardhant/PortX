@@ -9,18 +9,43 @@
     
     <div class="content-area">
         <div class="fade-in">
-            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-                <h4 class="fw-bold mb-0">Vehicles</h4>
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div>
+                    <h4 class="fw-bold mb-0">Vehicles</h4>
+                    <p class="text-muted small mb-0">Manage fleet vehicles, load capacities, and operational statuses.</p>
+                </div>
                 <a th:href="@{/admin/vehicles/new}" class="btn btn-primary shadow-sm fw-semibold">
                     <i class="bi bi-plus-lg me-2"></i>Add Vehicle
                 </a>
+            </div>
+
+            <!-- Filter Tab Pills Bar -->
+            <div class="filter-tab-group mb-3">
+                <button type="button" class="btn filter-tab active" data-filter="all">
+                    <i class="bi bi-grid-fill me-1"></i>All <span class="badge bg-secondary bg-opacity-25 text-secondary ms-1">0</span>
+                </button>
+                <button type="button" class="btn filter-tab" data-filter="AVAILABLE">
+                    <i class="bi bi-check-circle-fill text-success me-1"></i>Available <span class="badge bg-success bg-opacity-25 text-success ms-1">0</span>
+                </button>
+                <button type="button" class="btn filter-tab" data-filter="IN_TRANSIT">
+                    <i class="bi bi-truck text-primary me-1"></i>In Transit <span class="badge bg-primary bg-opacity-25 text-primary ms-1">0</span>
+                </button>
+                <button type="button" class="btn filter-tab" data-filter="MAINTENANCE">
+                    <i class="bi bi-tools text-warning me-1"></i>Maintenance <span class="badge bg-warning bg-opacity-25 text-warning ms-1">0</span>
+                </button>
+                <button type="button" class="btn filter-tab" data-filter="TRUCK">
+                    <i class="bi bi-truck-front-fill text-info me-1"></i>Trucks <span class="badge bg-info bg-opacity-25 text-info ms-1">0</span>
+                </button>
+                <button type="button" class="btn filter-tab" data-filter="VAN">
+                    <i class="bi bi-box-seam me-1"></i>Vans <span class="badge bg-secondary bg-opacity-25 text-secondary ms-1">0</span>
+                </button>
             </div>
 
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-transparent p-3 border-bottom d-flex justify-content-between align-items-center">
                     <div class="input-group" style="max-width: 340px; width: 100%;">
                         <span class="input-group-text border-end-0"><i class="bi bi-search"></i></span>
-                        <input type="text" class="form-control border-start-0 table-search-input" placeholder="Search vehicles by registration, type, status...">
+                        <input type="text" class="form-control border-start-0 table-search-input" placeholder="Search vehicles by reg number, type...">
                     </div>
                 </div>
                 <div class="card-body p-0">
@@ -29,21 +54,24 @@
                             <thead>
                                 <tr>
                                     <th class="ps-4">ID</th>
-                                    <th>Registration No</th>
-                                    <th>Type</th>
-                                    <th>Capacity (kg)</th>
+                                    <th>Registration Number</th>
+                                    <th>Vehicle Type</th>
+                                    <th>Max Capacity (kg)</th>
                                     <th>Status</th>
                                     <th class="text-end pe-4">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="vehicle : ${vehicles}">
+                                <tr th:each="vehicle : ${vehicles}" 
+                                    th:attr="data-status=${vehicle.status}, data-category=${vehicle.vehicleType}">
                                     <td class="ps-4 fw-bold" th:text="${vehicle.vehicleId}">1</td>
-                                    <td class="fw-bold" th:text="${vehicle.registrationNumber}">REG-123</td>
-                                    <td class="fw-medium" th:text="${vehicle.vehicleType}">TRUCK</td>
-                                    <td class="fw-medium" th:text="${vehicle.capacity}">5000</td>
+                                    <td class="fw-bold" th:text="${vehicle.registrationNumber}">REG-001</td>
                                     <td>
-                                        <span class="badge" th:classappend="${vehicle.status != null && vehicle.status.name() == 'AVAILABLE' ? 'bg-delivered' : (vehicle.status != null && vehicle.status.name() == 'MAINTENANCE' ? 'bg-pending' : 'bg-out_for_delivery')}" th:text="${vehicle.status}">AVAILABLE</span>
+                                        <span class="badge bg-light text-dark border" th:text="${vehicle.vehicleType}">TRUCK</span>
+                                    </td>
+                                    <td class="fw-medium" th:text="${vehicle.capacity + ' kg'}">1000 kg</td>
+                                    <td>
+                                        <span class="badge" th:classappend="${vehicle.status.name() == 'AVAILABLE' ? 'bg-delivered' : (vehicle.status.name() == 'IN_TRANSIT' ? 'bg-out_for_delivery' : 'bg-pending')}" th:text="${vehicle.status}">AVAILABLE</span>
                                     </td>
                                     <td class="text-end pe-4">
                                         <div class="action-btn-group">
@@ -60,7 +88,7 @@
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(vehicles)}" class="empty-table-row">
                                     <td colspan="6" class="text-center py-5 text-muted">
-                                        <i class="bi bi-truck-flatbed fs-1 d-block mb-3"></i>
+                                        <i class="bi bi-truck fs-1 d-block mb-3"></i>
                                         No vehicles found. Click 'Add Vehicle' to create one.
                                     </td>
                                 </tr>

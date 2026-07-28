@@ -9,11 +9,36 @@
     
     <div class="content-area">
         <div class="fade-in">
-            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-                <h4 class="fw-bold mb-0">Drivers</h4>
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div>
+                    <h4 class="fw-bold mb-0">Drivers</h4>
+                    <p class="text-muted small mb-0">Manage driver profiles, portal logins, and vehicle assignments.</p>
+                </div>
                 <a th:href="@{/admin/drivers/new}" class="btn btn-primary shadow-sm fw-semibold">
                     <i class="bi bi-plus-lg me-2"></i>Add Driver
                 </a>
+            </div>
+
+            <!-- Filter Tab Pills Bar -->
+            <div class="filter-tab-group mb-3">
+                <button type="button" class="btn filter-tab active" data-filter="all">
+                    <i class="bi bi-grid-fill me-1"></i>All <span class="badge bg-secondary bg-opacity-25 text-secondary ms-1">0</span>
+                </button>
+                <button type="button" class="btn filter-tab" data-filter="AVAILABLE">
+                    <i class="bi bi-check-circle-fill text-success me-1"></i>Available <span class="badge bg-success bg-opacity-25 text-success ms-1">0</span>
+                </button>
+                <button type="button" class="btn filter-tab" data-filter="ON_DUTY">
+                    <i class="bi bi-truck text-primary me-1"></i>On Duty <span class="badge bg-primary bg-opacity-25 text-primary ms-1">0</span>
+                </button>
+                <button type="button" class="btn filter-tab" data-filter="OFF_DUTY">
+                    <i class="bi bi-slash-circle text-warning me-1"></i>Off Duty <span class="badge bg-warning bg-opacity-25 text-warning ms-1">0</span>
+                </button>
+                <button type="button" class="btn filter-tab" data-filter="WITH_VEHICLE">
+                    <i class="bi bi-truck-front-fill me-1"></i>With Vehicle <span class="badge bg-info bg-opacity-25 text-info ms-1">0</span>
+                </button>
+                <button type="button" class="btn filter-tab" data-filter="WITHOUT_VEHICLE">
+                    <i class="bi bi-person-x me-1"></i>Without Vehicle <span class="badge bg-secondary bg-opacity-25 text-secondary ms-1">0</span>
+                </button>
             </div>
 
             <div class="card shadow-sm border-0">
@@ -39,7 +64,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="driver : ${drivers}">
+                                <tr th:each="driver : ${drivers}" 
+                                    th:attr="data-status=${driver.status}, data-has-vehicle=${driver.vehicleId != null}">
                                     <td class="ps-4 fw-bold" th:text="${driver.driverId}">1</td>
                                     <td class="fw-bold" th:text="${driver.name}">John Doe</td>
                                     <td>
