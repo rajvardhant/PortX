@@ -82,7 +82,7 @@ function showToast(message, type = 'info') {
 }
 
 // ──────────────────────────────────────────────────────────────────────────
-// 4. UNIFIED TAB FILTER & LIVE TABLE SEARCH SYSTEM
+// 4. UNIFIED TAB FILTER & LIVE TABLE SEARCH SYSTEM WITH URL QUERY SYNC
 // ──────────────────────────────────────────────────────────────────────────
 function initTableFiltersAndSearch() {
     // Event listener for tab button clicks
@@ -112,14 +112,23 @@ function initTableFiltersAndSearch() {
         }
     });
 
-    // Initial count calculation on page load
+    // Check URL query parameters for status/filter auto-activation (e.g. ?status=PENDING)
+    const urlParams = new URLSearchParams(window.location.search);
+    const filterParam = urlParams.get('status') || urlParams.get('filter');
+
     document.querySelectorAll('.filter-tab-group').forEach(group => {
+        if (filterParam) {
+            const matchingTab = group.querySelector(`.filter-tab[data-filter="${filterParam}"]`);
+            if (matchingTab) {
+                group.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+                matchingTab.classList.add('active');
+            }
+        }
         applyTableFilters(group);
     });
 }
 
 function applyTableFilters(triggerElement) {
-    // Find closest context wrapper or page content area
     const wrapper = triggerElement.closest('.content-area') || triggerElement.closest('.fade-in') || document;
     const activeTab = wrapper.querySelector('.filter-tab-group .filter-tab.active');
     const searchInput = wrapper.querySelector('.table-search-input');
@@ -133,7 +142,6 @@ function applyTableFilters(triggerElement) {
     let visibleCount = 0;
 
     rows.forEach(row => {
-        // Skip empty state or no-result feedback rows
         if (row.classList.contains('no-search-results') || row.classList.contains('empty-table-row')) {
             return;
         }
