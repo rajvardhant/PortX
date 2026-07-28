@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head(${deliveryRequest.id == null ? 'Create Delivery' : 'Edit Delivery'})}"></head>
+<body>
+
+<nav th:replace="~{fragments/common :: sidebar('deliveries')}"></nav>
+<div class="main-wrapper">
+    <nav th:replace="~{fragments/common :: navbar(${deliveryRequest.id == null ? 'Create New Delivery' : 'Edit Delivery'})}"></nav>
+    
+    <div class="content-area">
+        <div class="fade-in">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white p-4 border-bottom">
+                            <h5 class="mb-0 fw-bold" th:text="${deliveryRequest.id == null ? 'Create New Delivery' : 'Edit Delivery'}">Create Delivery</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form th:action="@{/admin/deliveries/save}" th:object="${deliveryRequest}" method="post">
+                                <input type="hidden" th:field="*{id}" />
+                                
+                                <h6 class="fw-bold mb-3 text-primary"><i class="bi bi-person me-2"></i>Customer Information</h6>
+                                <div class="row g-4 mb-4">
+                                    <div class="col-md-6">
+                                        <label for="customerName" class="form-label fw-semibold">Customer Name *</label>
+                                        <input type="text" class="form-control" id="customerName" th:field="*{customerName}" placeholder="Enter customer name" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="packageWeight" class="form-label fw-semibold">Package Weight (kg) *</label>
+                                        <input type="number" step="0.1" class="form-control" id="packageWeight" th:field="*{packageWeight}" placeholder="e.g. 15.5" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="customerAddress" class="form-label fw-semibold">Delivery Address *</label>
+                                        <textarea class="form-control" id="customerAddress" th:field="*{customerAddress}" rows="2" placeholder="Street address, City, Pincode" required></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="notes" class="form-label fw-semibold">Special Instructions (Notes)</label>
+                                        <textarea class="form-control" id="notes" th:field="*{notes}" rows="2" placeholder="Optional delivery instructions..."></textarea>
+                                    </div>
+                                </div>
+                                
+                                <h6 class="fw-bold mb-3 text-primary border-top pt-4"><i class="bi bi-truck me-2"></i>Assignment & Routing</h6>
+                                <div class="row g-4 mb-4">
+                                    <div class="col-md-4">
+                                        <label for="driverId" class="form-label fw-semibold">Assign Driver</label>
+                                        <select class="form-select" id="driverId" th:field="*{driverId}">
+                                            <option value="">-- Select Driver --</option>
+                                            <option th:each="d : ${drivers}" th:value="${d.driverId}" th:text="${d.name + ' (' + d.status + ')'}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="vehicleId" class="form-label fw-semibold">Assign Vehicle</label>
+                                        <select class="form-select" id="vehicleId" th:field="*{vehicleId}">
+                                            <option value="">-- Select Vehicle --</option>
+                                            <option th:each="v : ${vehicles}" th:value="${v.vehicleId}" th:text="${v.registrationNumber + ' (' + v.vehicleType + ')'}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="routeId" class="form-label fw-semibold">Assign Route</label>
+                                        <select class="form-select" id="routeId" th:field="*{routeId}">
+                                            <option value="" data-distance="0">-- Select Route --</option>
+                                            <option th:each="r : ${routes}" 
+                                                    th:value="${r.routeId}" 
+                                                    th:data-distance="${r.distance}" 
+                                                    th:text="${r.startLocation + ' → ' + r.endLocation + ' (' + r.distance + ' km)'}"></option>
+                                        </select>
+                                        <div class="form-text mt-2"><a th:href="@{/admin/routes/new}" class="text-primary fw-semibold">+ Generate new route</a></div>
+                                    </div>
+                                    <div class="col-md-4" th:if="${deliveryRequest.id != null}">
+                                        <label for="status" class="form-label fw-semibold">Delivery Status</label>
+                                        <select class="form-select" id="status" th:field="*{status}">
+                                            <option value="PENDING">PENDING</option>
+                                            <option value="ASSIGNED">ASSIGNED</option>
+                                            <option value="OUT_FOR_DELIVERY">OUT_FOR_DELIVERY</option>
+                                            <option value="DELIVERED">DELIVERED</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Per-KM Fare Estimator Widget -->
+                                <div class="card border-0 bg-white shadow-sm rounded-4 p-4 my-4" style="border: 1px solid var(--card-border) !important;">
+                                    <div class="d-flex align-items-center gap-2 mb-3">
+                                        <span class="fs-5 fw-extrabold text-success">₹</span>
+                                        <h6 class="fw-bold mb-0 text-dark">Per-KM Fare Estimator</h6>
+                                    </div>
+                                    <div class="row align-items-center g-3 border-bottom pb-3 mb-3">
+                                        <div class="col-sm-6">
+                                            <label for="ratePerKm" class="form-label fw-semibold text-secondary mb-0">Rate Per KM (₹):</label>
+                                        </div>
+                                        <div class="col-sm-6 text-sm-end">
+                                            <input type="number" id="ratePerKm" value="15" min="1" step="0.5" class="form-control text-end d-inline-block fw-semibold" style="max-width: 140px;" oninput="calculateFareEstimator();">
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="fw-bold text-dark fs-6">Estimated Freight Cost:</div>
+                                        <div class="fs-3 fw-bold text-success" id="estimatedFreightCost">₹ 0.00</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4 d-flex gap-3 border-top pt-4">
+                                    <button type="submit" class="btn btn-primary px-5"><i class="bi bi-save me-2"></i>Save Delivery</button>
+                                    <a th:href="@{/admin/deliveries}" class="btn btn-light px-4">Cancel</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/common :: scripts}"></th:block>
+<script>
+    function calculateFareEstimator() {
+        const routeSelect = document.getElementById('routeId');
+        const selectedOption = routeSelect.options[routeSelect.selectedIndex];
+        let distance = 0;
+
+        if (selectedOption && selectedOption.getAttribute('data-distance')) {
+            distance = parseFloat(selectedOption.getAttribute('data-distance')) || 0;
+        }
+
+        const rateInput = document.getElementById('ratePerKm');
+        const rate = parseFloat(rateInput.value) || 15;
+
+        let cost = 0;
+        if (distance > 0) {
+            cost = 100 + (distance * rate);
+        } else {
+            cost = 0;
+        }
+
+        const formattedCost = cost.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('estimatedFreightCost').textContent = `₹ ${formattedCost}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const routeSelect = document.getElementById('routeId');
+        if (routeSelect) {
+            routeSelect.addEventListener('change', calculateFareEstimator);
+        }
+        calculateFareEstimator();
+    });
+</script>
+</body>
+</html>

@@ -16,8 +16,8 @@ import java.util.List;
 /**
  * DataInitializer — Runs on application startup.
  * Truncates database tables to reset AUTO_INCREMENT primary key counters back to 1
- * and populates EXACTLY 5 clean sample records in each category (IDs 1, 2, 3, 4, 5),
- * with real-time fleet synchronization (Vehicles IN_TRANSIT, Drivers ON_DUTY).
+ * and populates EXACTLY 5 clean sample records in each category (IDs 1, 2, 3, 4, 5).
+ * Enables distinct role demo login accounts (admin, dispatcher, driver1).
  */
 @Slf4j
 @Component
@@ -45,6 +45,7 @@ public class DataInitializer implements CommandLineRunner {
             jdbcTemplate.execute("TRUNCATE TABLE routes");
             jdbcTemplate.execute("TRUNCATE TABLE drivers");
             jdbcTemplate.execute("TRUNCATE TABLE vehicles");
+            jdbcTemplate.execute("TRUNCATE TABLE users");
             jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 1");
             log.info("✅ Database tables truncated and Auto-Increment counters reset to 1");
         } catch (Exception e) {
@@ -54,7 +55,7 @@ public class DataInitializer implements CommandLineRunner {
             } catch (Exception ignored) {}
         }
 
-        // ── 1. DEFAULT SYSTEM USERS ──────────────────────────────────────
+        // ── 1. DISTINCT ROLE DEMO SYSTEM USERS (ADMIN, DISPATCHER, DRIVER) ─
         User adminUser      = createOrUpdateUser("admin",      "admin123", "admin@portx.com",      "System Administrator", UserRole.ADMIN);
         User dispatcherUser = createOrUpdateUser("dispatcher", "admin123", "dispatcher@portx.com", "John Dispatcher",      UserRole.DISPATCHER);
         User driverUser     = createOrUpdateUser("driver1",    "admin123", "driver1@portx.com",    "Mike Driver",          UserRole.DRIVER);
@@ -93,7 +94,7 @@ public class DataInitializer implements CommandLineRunner {
         for (int i = 0; i < sampleDrivers.length; i++) {
             String[] dData = sampleDrivers[i];
             Vehicle assignedVehicle = vehicles.get(i);
-            User linkedUser = (i == 0) ? driverUser : null; // Link driver1 account to Mike Driver
+            User linkedUser = (i == 0) ? driverUser : null;
 
             Driver d = driverRepository.save(Driver.builder()
                     .name(dData[0])
@@ -150,7 +151,6 @@ public class DataInitializer implements CommandLineRunner {
             Route assignedRoute = routes.get(i);
             DeliveryStatus delStatus = DeliveryStatus.valueOf(dData[3]);
 
-            // Sync Vehicle and Driver statuses according to initial delivery status
             if (delStatus == DeliveryStatus.ASSIGNED || delStatus == DeliveryStatus.OUT_FOR_DELIVERY) {
                 assignedVehicle.setStatus(VehicleStatus.IN_TRANSIT);
                 vehicleRepository.save(assignedVehicle);
@@ -170,7 +170,6 @@ public class DataInitializer implements CommandLineRunner {
                     .notes("Standard priority delivery for " + dData[0])
                     .build());
 
-            // Auto Create Invoice
             double dist = (assignedRoute != null && assignedRoute.getDistance() != null) ? assignedRoute.getDistance() : 10.0;
             double amount = 100.0 + (dist * 10.0);
             InvoiceStatus invStatus = (delStatus == DeliveryStatus.DELIVERED) ? InvoiceStatus.PAID : InvoiceStatus.PENDING;
@@ -202,7 +201,9 @@ public class DataInitializer implements CommandLineRunner {
                     .fullName(fullName)
                     .role(role)
                     .build();
-            log.info("✅ Creating user: {}", username);
+            log.info("✅ Creating demo user [{}] with role [{}]", username, role);
+        } else {
+            user.setRole(role);
         }
 
         user.setPassword(passwordEncoder.encode(rawPassword));

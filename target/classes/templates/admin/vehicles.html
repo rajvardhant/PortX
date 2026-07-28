@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/common :: head('Vehicles Management')}"></head>
 <body>
 
@@ -14,7 +14,7 @@
                     <h4 class="fw-bold mb-0">Vehicles</h4>
                     <p class="text-muted small mb-0">Manage fleet vehicles, load capacities, and operational statuses.</p>
                 </div>
-                <a th:href="@{/admin/vehicles/new}" class="btn btn-primary shadow-sm fw-semibold">
+                <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/vehicles/new}" class="btn btn-primary shadow-sm fw-semibold">
                     <i class="bi bi-plus-lg me-2"></i>Add Vehicle
                 </a>
             </div>
@@ -58,7 +58,7 @@
                                     <th>Vehicle Type</th>
                                     <th>Max Capacity (kg)</th>
                                     <th>Status</th>
-                                    <th class="text-end pe-4">Actions</th>
+                                    <th sec:authorize="hasRole('ADMIN')" class="text-end pe-4">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -73,7 +73,7 @@
                                     <td>
                                         <span class="badge" th:classappend="${vehicle.status.name() == 'AVAILABLE' ? 'bg-delivered' : (vehicle.status.name() == 'IN_TRANSIT' ? 'bg-out_for_delivery' : 'bg-pending')}" th:text="${vehicle.status}">AVAILABLE</span>
                                     </td>
-                                    <td class="text-end pe-4">
+                                    <td sec:authorize="hasRole('ADMIN')" class="text-end pe-4">
                                         <div class="action-btn-group">
                                             <a th:href="@{/admin/vehicles/{id}/edit(id=${vehicle.vehicleId})}" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Edit">
                                                 <i class="bi bi-pencil"></i>
@@ -88,8 +88,8 @@
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(vehicles)}" class="empty-table-row">
                                     <td colspan="6" class="text-center py-5 text-muted">
-                                        <i class="bi bi-truck fs-1 d-block mb-3"></i>
-                                        No vehicles found. Click 'Add Vehicle' to create one.
+                                        <i class="bi bi-truck-front fs-1 d-block mb-3"></i>
+                                        No vehicles found.
                                     </td>
                                 </tr>
                             </tbody>

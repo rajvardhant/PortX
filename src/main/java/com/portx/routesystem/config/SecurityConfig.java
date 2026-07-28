@@ -5,7 +5,6 @@ import com.portx.routesystem.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -20,12 +19,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
- * SecurityConfig — Modular Role-Based Security Configuration.
+ * SecurityConfig — Central Spring Security configuration.
  *
- * ROLE ACCESS MATRIX:
- * 1. ADMIN (ROLE_ADMIN): System manager (Users, Fleet, Vehicles, Customers, Orders, System Dashboard, Reports).
- * 2. DISPATCHER (ROLE_DISPATCHER): Operations manager (Daily dispatch, Driver assignments, Active tracking, Routes).
- * 3. DRIVER (ROLE_DRIVER): Delivery executive (Assigned orders, Pickups, In-transit updates, Delivery completion, History).
+ * PURPOSE:
+ * 1. Configures form-based login and logout for Admin, Dispatcher, and Driver roles.
+ * 2. Enforces BCrypt password encoding for system users.
+ * 3. Integrates JWT filter for REST APIs.
  */
 @Configuration
 @EnableWebSecurity
@@ -36,19 +35,11 @@ public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final CustomUserDetailsService userDetailsService;
 
-    // Password encoder using BCrypt hashing
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Authentication manager used for manual authentication
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
-
-    // DAO-based authentication provider
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -58,66 +49,45 @@ public class SecurityConfig {
     }
 
     @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // Disable CSRF for REST API & web form endpoints
-            .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/api/**", "/driver/**", "/admin/**", "/dispatcher/**", "/invoices/**")
-            )
-            .authorizeHttpRequests(auth -> auth
-                // Publicly accessible pages & static assets
-                .requestMatchers(
-                    "/", "/services", "/about", "/contact",
-                    "/login", "/register",
-                    "/api/auth/**",
-                    "/css/**", "/js/**", "/images/**",
-                    "/webjars/**", "/favicon.ico"
-                ).permitAll()
-
-                // ── 1. ADMIN MODULE (ROLE_ADMIN Only) ──────────────────────
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/admin/drivers/**").hasRole("ADMIN")
-                .requestMatchers("/admin/vehicles/**").hasRole("ADMIN")
-
-                // ── 2. DISPATCHER MODULE (ROLE_ADMIN & ROLE_DISPATCHER) ────
-                .requestMatchers("/api/dispatcher/**").hasAnyRole("ADMIN", "DISPATCHER")
-                .requestMatchers("/admin/dashboard").hasAnyRole("ADMIN", "DISPATCHER")
-                .requestMatchers("/admin/routes/**").hasAnyRole("ADMIN", "DISPATCHER")
-                .requestMatchers("/dispatcher/**").hasAnyRole("ADMIN", "DISPATCHER")
-
-                // ── 3. DRIVER MODULE (ROLE_ADMIN & ROLE_DRIVER) ────────────
-                .requestMatchers("/api/driver/**").hasAnyRole("ADMIN", "DRIVER")
-                .requestMatchers("/driver/**").hasAnyRole("ADMIN", "DRIVER")
-
-                // ── 4. INVOICES (ROLE_ADMIN & ROLE_DISPATCHER) ─────────────
-                .requestMatchers("/invoices/**").hasAnyRole("ADMIN", "DISPATCHER")
-
-                // All other requests require authentication
-                .anyRequest().authenticated()
-            )
-            // Allow sessions for Thymeleaf navigation
+            .csrf(csrf -> csrf.ignoringRequestMatchers(
+                "/api/**", "/logout", "/driver/**"
+            ))
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
             )
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/", "/services", "/about", "/contact",
+                    "/login", "/register", "/logout", "/css/**", "/js/**", "/images/**", "/webjars/**",
+                    "/api/auth/**"
+                ).permitAll()
+                .requestMatchers("/driver/**").hasAnyRole("ADMIN", "DRIVER", "DISPATCHER")
+                .requestMatchers("/dispatcher/**").hasAnyRole("ADMIN", "DISPATCHER")
+                .requestMatchers("/admin/**").hasAnyRole("ADMIN", "DISPATCHER")
+                .anyRequest().authenticated()
+            )
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-            // Form Login configuration
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/dashboard", true)
-                .failureUrl("/login?error")
                 .permitAll()
             )
-            // Logout configuration - Redirects to Landing Page (/)
             .logout(logout -> logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/")
+                .logoutSuccessUrl("/login?logout")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
             )
-            // 403 Access Denied handling
             .exceptionHandling(ex -> ex
                 .accessDeniedPage("/403")
             );

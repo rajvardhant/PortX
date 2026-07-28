@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/common :: head('Routes Directory')}"></head>
 <body>
 
@@ -14,7 +14,7 @@
                     <h4 class="fw-bold mb-0">Routes</h4>
                     <p class="text-muted small mb-0">Optimized delivery routes, OpenRouteService distances, and estimated travel times.</p>
                 </div>
-                <a th:href="@{/admin/routes/new}" class="btn btn-primary shadow-sm fw-semibold">
+                <a sec:authorize="hasAnyRole('ADMIN', 'DISPATCHER')" th:href="@{/admin/routes/new}" class="btn btn-primary shadow-sm fw-semibold">
                     <i class="bi bi-plus-lg me-2"></i>Calculate Route
                 </a>
             </div>
@@ -50,7 +50,7 @@
                                     <th>Distance (km)</th>
                                     <th>Est. Duration</th>
                                     <th>Status</th>
-                                    <th class="text-end pe-4">Actions</th>
+                                    <th sec:authorize="hasRole('ADMIN')" class="text-end pe-4">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,7 +64,7 @@
                                     <td>
                                         <span class="badge" th:classappend="${route.status.name() == 'ACTIVE' ? 'bg-delivered' : 'bg-pending'}" th:text="${route.status}">ACTIVE</span>
                                     </td>
-                                    <td class="text-end pe-4">
+                                    <td sec:authorize="hasRole('ADMIN')" class="text-end pe-4">
                                         <div class="action-btn-group">
                                             <form th:action="@{/admin/routes/{id}/delete(id=${route.routeId})}" method="post" class="d-inline m-0" onsubmit="return confirm('Are you sure you want to delete this route?');">
                                                 <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Delete">
@@ -77,7 +77,7 @@
                                 <tr th:if="${#lists.isEmpty(routes)}" class="empty-table-row">
                                     <td colspan="7" class="text-center py-5 text-muted">
                                         <i class="bi bi-map fs-1 d-block mb-3"></i>
-                                        No routes found. Click 'Calculate Route' to create one.
+                                        No routes found.
                                     </td>
                                 </tr>
                             </tbody>

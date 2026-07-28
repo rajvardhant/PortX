@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head('Dispatcher Portal')}"></head>
+<body>
+
+<nav th:replace="~{fragments/common :: sidebar('dispatcher-dashboard')}"></nav>
+<div class="main-wrapper">
+    <nav th:replace="~{fragments/common :: navbar('Dispatcher Operations Center')}"></nav>
+    
+    <div class="content-area">
+        <div class="fade-in">
+            <!-- Stats Header Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="card stat-card text-decoration-none" style="background: linear-gradient(135deg, #0284c7, #0369a1);">
+                        <div class="card-body">
+                            <div>
+                                <div class="stat-value" th:text="${stats?.totalDeliveries ?: 0}">0</div>
+                                <div class="stat-label">Total Shipments</div>
+                            </div>
+                        </div>
+                        <i class="bi bi-box-seam stat-card-icon"></i>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card stat-card text-decoration-none" style="background: linear-gradient(135deg, #d97706, #b45309);">
+                        <div class="card-body">
+                            <div>
+                                <div class="stat-value" th:text="${stats?.pendingDeliveries ?: 0}">0</div>
+                                <div class="stat-label">Pending Dispatch</div>
+                            </div>
+                        </div>
+                        <i class="bi bi-hourglass-split stat-card-icon"></i>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card stat-card text-decoration-none" style="background: linear-gradient(135deg, #ea580c, #c2410c);">
+                        <div class="card-body">
+                            <div>
+                                <div class="stat-value" th:text="${stats?.ongoingDeliveries ?: 0}">0</div>
+                                <div class="stat-label">In-Transit Shipments</div>
+                            </div>
+                        </div>
+                        <i class="bi bi-arrow-repeat stat-card-icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Deliveries Table Card -->
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div>
+                    <h5 class="fw-bold mb-0">Active Dispatch Orders</h5>
+                    <p class="text-muted small mb-0">Manage customer shipments, driver assignments, and delivery progress.</p>
+                </div>
+                <a th:href="@{/admin/deliveries/new}" class="btn btn-primary shadow-sm fw-semibold">
+                    <i class="bi bi-plus-lg me-2"></i>Create New Delivery
+                </a>
+            </div>
+
+            <!-- Filter Tab Pills Bar -->
+            <div class="filter-tab-group mb-3">
+                <button type="button" class="btn filter-tab active" data-filter="all">
+                    <i class="bi bi-grid-fill me-1"></i>All <span class="badge bg-secondary bg-opacity-25 text-secondary ms-1">0</span>
+                </button>
+                <button type="button" class="btn filter-tab" data-filter="PENDING">
+                    <i class="bi bi-clock-history text-warning me-1"></i>Pending <span class="badge bg-warning bg-opacity-25 text-warning ms-1">0</span>
+                </button>
+                <button type="button" class="btn filter-tab" data-filter="ASSIGNED">
+                    <i class="bi bi-person-check text-info me-1"></i>Assigned <span class="badge bg-info bg-opacity-25 text-info ms-1">0</span>
+                </button>
+                <button type="button" class="btn filter-tab" data-filter="OUT_FOR_DELIVERY">
+                    <i class="bi bi-truck text-primary me-1"></i>Out For Delivery <span class="badge bg-primary bg-opacity-25 text-primary ms-1">0</span>
+                </button>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-transparent p-3 border-bottom d-flex justify-content-between align-items-center">
+                    <div class="input-group" style="max-width: 340px; width: 100%;">
+                        <span class="input-group-text border-end-0"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control border-start-0 table-search-input" placeholder="Search orders by customer, driver...">
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4">ID</th>
+                                    <th>Customer</th>
+                                    <th>Package</th>
+                                    <th>Driver</th>
+                                    <th>Vehicle</th>
+                                    <th>Status</th>
+                                    <th class="text-end pe-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="delivery : ${deliveries}" th:attr="data-status=${delivery.status}">
+                                    <td class="ps-4 fw-bold" th:text="${'#DEL-' + delivery.deliveryId}">#DEL-1</td>
+                                    <td>
+                                        <div class="fw-bold" th:text="${delivery.customerName}">John Smith</div>
+                                        <div class="small text-muted" th:text="${delivery.customerAddress}">Address</div>
+                                    </td>
+                                    <td class="fw-medium" th:text="${delivery.packageWeight + ' kg'}">10 kg</td>
+                                    <td class="fw-medium" th:text="${delivery.driverName != null ? delivery.driverName : 'Unassigned'}">Unassigned</td>
+                                    <td class="fw-medium" th:text="${delivery.vehicleRegistrationNumber != null ? delivery.vehicleRegistrationNumber : 'Unassigned'}">Unassigned</td>
+                                    <td>
+                                        <span class="badge" th:classappend="${delivery.status.name() == 'DELIVERED' ? 'bg-delivered' : (delivery.status.name() == 'OUT_FOR_DELIVERY' || delivery.status.name() == 'ASSIGNED' ? 'bg-out_for_delivery' : 'bg-pending')}" th:text="${delivery.status}">PENDING</span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <a th:href="@{/admin/deliveries/{id}/edit(id=${delivery.deliveryId})}" class="btn btn-sm btn-outline-primary me-1">
+                                            <i class="bi bi-pencil me-1"></i>Edit / Assign
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/common :: scripts}"></th:block>
+</body>
+</html>

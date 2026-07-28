@@ -400,25 +400,56 @@ body[data-theme="dark"] .table-hover tbody tr:hover td {
   margin-bottom: 1rem;
 }
 
-.logo-container {
-  display: flex;
+.logo-container, .brand-logo {
+  display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.75rem;
+  text-decoration: none;
 }
 
-.logo-icon {
-  font-size: 1.6rem;
-  color: #818cf8;
+.logo-icon, .brand-logo-icon {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  border-radius: 0.9rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #ffffff !important;
+  font-size: 1.4rem;
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.35);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.logo-text {
-  font-size: 1.4rem;
+.logo-container:hover .logo-icon, 
+.brand-logo:hover .brand-logo-icon {
+  transform: scale(1.06) rotate(-3deg);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.5);
+}
+
+.logo-text, .brand-logo-text {
+  font-size: 1.5rem;
   font-weight: 900;
-  color: #ffffff;
   letter-spacing: -0.5px;
+  color: var(--logo-text-color, #ffffff);
+  transition: color 0.3s ease;
+}
+
+/* Dynamic Theme Colors for Navbar / Header Logos */
+[data-theme="light"] .logo-text, 
+[data-theme="light"] .brand-logo-text {
+  --logo-text-color: #0f172a;
+}
+
+[data-theme="dark"] .logo-text, 
+[data-theme="dark"] .brand-logo-text {
+  --logo-text-color: #ffffff;
+}
+
+/* Sidebar Specific Logo Override: Text is always crisp white on deep navy sidebar */
+.sidebar .logo-text {
+  color: #ffffff !important;
 }
 
 .btn-sidebar-toggle {

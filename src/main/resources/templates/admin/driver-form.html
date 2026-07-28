@@ -19,7 +19,8 @@
                             <form th:action="@{/admin/drivers/save}" th:object="${driverRequest}" method="post">
                                 <input type="hidden" th:field="*{id}" />
                                 
-                                <div class="row g-4">
+                                <h6 class="fw-bold mb-3 text-primary"><i class="bi bi-person-vcard me-2"></i>Driver Profile Information</h6>
+                                <div class="row g-4 mb-4">
                                     <div class="col-md-6">
                                         <label for="name" class="form-label fw-semibold">Full Name *</label>
                                         <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="e.g. Rahul Sharma" required>
@@ -47,43 +48,24 @@
                                             <option value="OFF_DUTY">OFF_DUTY</option>
                                         </select>
                                     </div>
-                                    <div class="col-12">
-                                        <label for="vehicleId" class="form-label fw-semibold">Assign Vehicle</label>
-                                        <select class="form-select" id="vehicleId" th:field="*{vehicleId}">
-                                            <option value="">-- No Vehicle Assigned --</option>
-                                            <option th:each="v : ${vehicles}" th:value="${v.vehicleId}" th:text="${v.registrationNumber + ' (' + v.vehicleType + ' - Cap: ' + v.capacity + 'kg)'}"></option>
-                                        </select>
-                                    </div>
+                                </div>
 
-                                    <!-- Driver Portal Login Credentials Card Section -->
-                                    <div class="col-12 mt-4 pt-4 border-top">
-                                        <div class="d-flex align-items-center gap-2 mb-2">
-                                            <i class="bi bi-person-lock text-primary fs-5"></i>
-                                            <h6 class="fw-bold mb-0 text-primary">Driver Portal Login Credentials</h6>
-                                        </div>
-                                        <p class="text-muted small mb-3">Set up a unique username and password so this driver can sign in to the Driver Portal and manage assigned deliveries.</p>
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <label for="username" class="form-label fw-semibold">Login Username</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                                    <input type="text" class="form-control" id="username" th:field="*{username}" placeholder="e.g. driver2 or rahul_driver">
-                                                </div>
-                                                <div class="form-text text-muted small">Unique username for login.</div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="password" class="form-label fw-semibold">Login Password</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="bi bi-key"></i></span>
-                                                    <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Set password (e.g. admin123)">
-                                                </div>
-                                                <div class="form-text text-muted small">Leave blank when editing to keep current password.</div>
-                                            </div>
-                                        </div>
+                                <!-- Driver Portal Login Credentials Section -->
+                                <h6 class="fw-bold mb-3 text-primary border-top pt-4"><i class="bi bi-shield-lock me-2"></i>Driver Portal Login Credentials</h6>
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <label for="username" class="form-label fw-semibold">Username for Login</label>
+                                        <input type="text" class="form-control" id="username" th:field="*{username}" placeholder="e.g. driver2">
+                                        <div class="form-text text-muted small">Driver can log in using this username.</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="password" class="form-label fw-semibold">Password</label>
+                                        <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Leave blank for default (driver123)">
+                                        <div class="form-text text-muted small">Defaults to 'driver123' if left blank.</div>
                                     </div>
                                 </div>
                                 
-                                <div class="mt-5 d-flex gap-3">
+                                <div class="mt-5 d-flex gap-3 border-top pt-4">
                                     <button type="submit" class="btn btn-primary px-4"><i class="bi bi-save me-2"></i>Save Driver</button>
                                     <a th:href="@{/admin/drivers}" class="btn btn-light px-4">Cancel</a>
                                 </div>

@@ -12,8 +12,8 @@
     <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Custom CSS & Theme System -->
-    <link href="/css/style.css?v=1.1.1" rel="stylesheet">
-    <link href="/css/print.css?v=1.1.1" rel="stylesheet" media="print">
+    <link href="/css/style.css?v=1.1.4" rel="stylesheet">
+    <link href="/css/print.css?v=1.1.4" rel="stylesheet" media="print">
 </head>
 <body>
 
@@ -32,26 +32,19 @@
     </div>
     
     <ul class="sidebar-nav">
-        <!-- Admin / Dispatcher Navigation -->
+        <!-- ADMIN & DISPATCHER NAVIGATION MENU -->
         <div sec:authorize="hasAnyRole('ADMIN', 'DISPATCHER')">
             <li>
-                <a th:href="@{/admin/dashboard}" th:classappend="${activeMenu == 'dashboard'} ? 'active' : ''" title="Dashboard">
+                <a th:href="@{/dashboard}" th:classappend="${activeMenu == 'dashboard'} ? 'active' : ''" title="Dashboard">
                     <i class="bi bi-grid-1x2"></i><span class="nav-text">Dashboard</span>
                 </a>
             </li>
-            
-            <li sec:authorize="hasRole('ADMIN')">
-                <a th:href="@{/admin/dispatchers}" th:classappend="${activeMenu == 'dispatchers'} ? 'active' : ''" title="Dispatchers">
-                    <i class="bi bi-headset"></i><span class="nav-text">Dispatchers</span>
-                </a>
-            </li>
-
-            <li sec:authorize="hasRole('ADMIN')">
+            <li>
                 <a th:href="@{/admin/drivers}" th:classappend="${activeMenu == 'drivers'} ? 'active' : ''" title="Drivers">
                     <i class="bi bi-person-badge"></i><span class="nav-text">Drivers</span>
                 </a>
             </li>
-            <li sec:authorize="hasRole('ADMIN')">
+            <li>
                 <a th:href="@{/admin/vehicles}" th:classappend="${activeMenu == 'vehicles'} ? 'active' : ''" title="Vehicles">
                     <i class="bi bi-truck-front"></i><span class="nav-text">Vehicles</span>
                 </a>
@@ -62,18 +55,8 @@
                 </a>
             </li>
             <li>
-                <a th:href="@{/dispatcher/deliveries}" th:classappend="${activeMenu == 'deliveries'} ? 'active' : ''" title="Deliveries">
+                <a th:href="@{/admin/deliveries}" th:classappend="${activeMenu == 'deliveries'} ? 'active' : ''" title="Deliveries">
                     <i class="bi bi-box-seam"></i><span class="nav-text">Deliveries</span>
-                </a>
-            </li>
-            <li>
-                <a th:href="@{/driver/dashboard}" th:classappend="${activeMenu == 'driver-dashboard'} ? 'active' : ''" title="Driver Portal">
-                    <i class="bi bi-speedometer2"></i><span class="nav-text">Driver Portal</span>
-                </a>
-            </li>
-            <li>
-                <a th:href="@{/driver/history}" th:classappend="${activeMenu == 'driver-history'} ? 'active' : ''" title="Driver History">
-                    <i class="bi bi-clock-history"></i><span class="nav-text">Driver History</span>
                 </a>
             </li>
             <li>
@@ -82,8 +65,8 @@
                 </a>
             </li>
         </div>
-        
-        <!-- Driver Navigation -->
+
+        <!-- DRIVER NAVIGATION MENU -->
         <div sec:authorize="hasRole('DRIVER')">
             <li>
                 <a th:href="@{/driver/dashboard}" th:classappend="${activeMenu == 'driver-dashboard'} ? 'active' : ''" title="Driver Portal">

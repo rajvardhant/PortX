@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/common :: head('Driver Portal')}"></head>
+<body>
+
+<nav th:replace="~{fragments/common :: sidebar('driver-dashboard')}"></nav>
+<div class="main-wrapper">
+    <nav th:replace="~{fragments/common :: navbar('Driver Portal — Active Shipments')}"></nav>
+    
+    <div class="content-area">
+        <div class="fade-in">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <div>
+                    <h4 class="fw-bold mb-0">My Active Shipments</h4>
+                    <p class="text-muted small mb-0">View assigned shipments and update delivery status in real-time.</p>
+                </div>
+                <a th:href="@{/driver/history}" class="btn btn-outline-primary fw-semibold">
+                    <i class="bi bi-clock-history me-2"></i>Delivery History
+                </a>
+            </div>
+
+            <!-- Active Deliveries Cards -->
+            <div class="row g-4">
+                <div class="col-lg-6" th:each="delivery : ${deliveries}">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-header bg-white p-3 border-bottom d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-primary" th:text="${'#DEL-' + delivery.deliveryId}">#DEL-1</span>
+                            <span class="badge" th:classappend="${delivery.status.name() == 'OUT_FOR_DELIVERY' ? 'bg-out_for_delivery' : 'bg-pending'}" th:text="${delivery.status}">PENDING</span>
+                        </div>
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold mb-1" th:text="${delivery.customerName}">Customer Name</h5>
+                            <p class="text-muted small mb-3"><i class="bi bi-geo-alt-fill text-danger me-1"></i><span th:text="${delivery.customerAddress}">Address</span></p>
+
+                            <div class="bg-light p-3 rounded-3 mb-3">
+                                <div class="row g-2 small">
+                                    <div class="col-6"><strong>Package Weight:</strong> <span th:text="${delivery.packageWeight + ' kg'}">10 kg</span></div>
+                                    <div class="col-6"><strong>Vehicle:</strong> <span th:text="${delivery.vehicleRegistrationNumber != null ? delivery.vehicleRegistrationNumber : 'Assigned'}">Assigned</span></div>
+                                    <div class="col-12 mt-2" th:if="${delivery.routeStartLocation != null}">
+                                        <strong>Route:</strong> <span th:text="${delivery.routeStartLocation}">Start</span> &rarr; <span th:text="${delivery.routeEndLocation}">End</span>
+                                        <div class="text-muted small" th:text="${delivery.routeDistance + ' km (' + delivery.routeEstimatedTime + ')'}">10 km</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="d-flex flex-wrap gap-2 align-items-center">
+                                <a th:if="${delivery.status.name() == 'PENDING' || delivery.status.name() == 'ASSIGNED'}"
+                                   th:href="@{/driver/deliveries/{id}/status(id=${delivery.deliveryId}, status='OUT_FOR_DELIVERY')}" 
+                                   class="btn btn-primary btn-sm px-3 fw-bold">
+                                    <i class="bi bi-truck me-1"></i>Start Delivery
+                                </a>
+
+                                <a th:if="${delivery.status.name() == 'OUT_FOR_DELIVERY'}"
+                                   th:href="@{/driver/deliveries/{id}/status(id=${delivery.deliveryId}, status='DELIVERED')}" 
+                                   class="btn btn-success btn-sm px-3 fw-bold">
+                                    <i class="bi bi-check-circle-fill me-1"></i>Mark Delivered
+                                </a>
+
+                                <div class="ms-auto">
+                                    <form th:action="@{/driver/deliveries/{id}/status(id=${delivery.deliveryId})}" method="get" class="d-inline-flex align-items-center gap-1">
+                                        <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                            <option value="PENDING" th:selected="${delivery.status.name() == 'PENDING'}">PENDING</option>
+                                            <option value="ASSIGNED" th:selected="${delivery.status.name() == 'ASSIGNED'}">ASSIGNED</option>
+                                            <option value="OUT_FOR_DELIVERY" th:selected="${delivery.status.name() == 'OUT_FOR_DELIVERY'}">OUT_FOR_DELIVERY</option>
+                                            <option value="DELIVERED" th:selected="${delivery.status.name() == 'DELIVERED'}">DELIVERED</option>
+                                        </select>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12" th:if="${#lists.isEmpty(deliveries)}">
+                    <div class="card shadow-sm border-0 text-center py-5">
+                        <div class="card-body">
+                            <i class="bi bi-check-circle-fill text-success display-4 d-block mb-3"></i>
+                            <h5 class="fw-bold">No Active Deliveries</h5>
+                            <p class="text-muted small">You currently have no pending or ongoing deliveries assigned.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{fragments/common :: scripts}"></th:block>
+</body>
+</html>
