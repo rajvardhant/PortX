@@ -20,73 +20,50 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * DriverService — Business logic layer for managing commercial logistics drivers.
- *
- * PURPOSE:
- * 1. Manages CRUD operations for driver profiles.
- * 2. Enforces 10-digit numeric phone number validation and uppercase license numbers.
- * 3. Links available commercial vehicles to drivers.
- * 4. Automatically creates and links driver user login accounts when username & password are supplied by Admin.
+ * DriverService - Business logic layer for managing commercial logistics drivers.
  */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class DriverService {
 
-    // Inject JPA repositories and security utilities
     private final DriverRepository driverRepository;
     private final VehicleRepository vehicleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    /**
-     * Retrieves all registered drivers in the system.
-     */
     public List<DriverResponse> getAllDrivers() {
         return driverRepository.findAll().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Retrieves only drivers currently marked AVAILABLE.
-     */
     public List<DriverResponse> getAvailableDrivers() {
         return driverRepository.findByStatus(DriverStatus.AVAILABLE).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Finds a driver by primary key ID or throws ResourceNotFoundException.
-     */
     public DriverResponse getDriverById(Long id) {
         Driver driver = driverRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Driver", id));
         return mapToResponse(driver);
     }
 
-    /**
-     * Creates a new Driver record and optionally creates a linked User account for portal login.
-     */
     @Transactional
     public DriverResponse createDriver(DriverRequest req) {
-        // Step 1: Validate 10-digit phone and uppercase license number
         cleanAndValidateRequest(req);
 
-        // Step 2: Ensure license number is unique in database
         if (driverRepository.existsByLicenseNumber(req.getLicenseNumber())) {
             throw new IllegalArgumentException("License number already registered: " + req.getLicenseNumber());
         }
 
-        // Step 3: Fetch assigned vehicle if vehicleId was provided
         Vehicle vehicle = null;
         if (req.getVehicleId() != null) {
             vehicle = vehicleRepository.findById(req.getVehicleId())
                     .orElseThrow(() -> new ResourceNotFoundException("Vehicle", req.getVehicleId()));
         }
 
-        // Step 4: Optionally create User account for driver login
         User user = null;
         if (req.getUsername() != null && !req.getUsername().trim().isEmpty()) {
             String username = req.getUsername().trim();
@@ -104,7 +81,6 @@ public class DriverService {
             user = userRepository.save(user);
         }
 
-        // Step 5: Build Driver entity and persist to database
         Driver driver = Driver.builder()
                 .name(req.getName().trim())
                 .phone(req.getPhone())
@@ -117,9 +93,6 @@ public class DriverService {
         return mapToResponse(driverRepository.save(driver));
     }
 
-    /**
-     * Updates an existing Driver record and manages linked user account credentials.
-     */
     @Transactional
     public DriverResponse updateDriver(Long id, DriverRequest req) {
         cleanAndValidateRequest(req);
@@ -133,7 +106,6 @@ public class DriverService {
                     .orElseThrow(() -> new ResourceNotFoundException("Vehicle", req.getVehicleId()));
         }
 
-        // Update driver basic fields
         driver.setName(req.getName().trim());
         driver.setPhone(req.getPhone());
         driver.setLicenseNumber(req.getLicenseNumber());
@@ -142,7 +114,6 @@ public class DriverService {
             driver.setStatus(req.getStatus());
         }
 
-        // Manage linked User credentials if provided
         if (req.getUsername() != null && !req.getUsername().trim().isEmpty()) {
             String newUsername = req.getUsername().trim();
             User existingUser = driver.getUser();
@@ -174,15 +145,11 @@ public class DriverService {
         return mapToResponse(driverRepository.save(driver));
     }
 
-    /**
-     * Deletes a driver record by ID.
-     */
     @Transactional
     public void deleteDriver(Long id) {
         Driver driver = driverRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Driver", id));
         
-        // Unlink user before deleting driver entity
         User user = driver.getUser();
         driver.setUser(null);
         driverRepository.save(driver);
@@ -193,9 +160,6 @@ public class DriverService {
         }
     }
 
-    /**
-     * Helper method to format license numbers to UPPERCASE and validate 10-digit numeric phone numbers.
-     */
     private void cleanAndValidateRequest(DriverRequest req) {
         if (req.getLicenseNumber() != null) {
             req.setLicenseNumber(req.getLicenseNumber().toUpperCase().trim());
@@ -209,9 +173,6 @@ public class DriverService {
         }
     }
 
-    /**
-     * Maps Driver JPA entity to DriverResponse DTO.
-     */
     private DriverResponse mapToResponse(Driver d) {
         DriverResponse.DriverResponseBuilder builder = DriverResponse.builder()
                 .driverId(d.getDriverId())

@@ -68,4 +68,5 @@ com\portx\routesystem\entity\RouteStatus.class
 com\portx\routesystem\dto\VehicleRequest.class
 com\portx\routesystem\controller\RouteController.class
 com\portx\routesystem\repository\UserRepository.class
+com\portx\routesystem\config\RequestLoggingFilter.class
 com\portx\routesystem\controller\WebController.class

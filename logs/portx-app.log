@@ -1,0 +1,36 @@
+2026-08-06 03:54:49.105 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-08-06 03:54:49.145 [main] INFO  c.p.r.RouteSystemApplication - Starting RouteSystemApplication using Java 17.0.19 with PID 42272 (D:\PortX\dynamic-route-system\target\classes started by raj in D:\PortX\dynamic-route-system)
+2026-08-06 03:54:49.145 [main] INFO  c.p.r.RouteSystemApplication - No active profile set, falling back to 1 default profile: "default"
+2026-08-06 03:54:49.760 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-06 03:54:49.819 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 50 ms. Found 6 JPA repository interfaces.
+2026-08-06 03:54:50.335 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-08-06 03:54:50.344 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-08-06 03:54:50.346 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-08-06 03:54:50.346 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.20]
+2026-08-06 03:54:50.400 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-08-06 03:54:50.401 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1217 ms
+2026-08-06 03:54:50.514 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-08-06 03:54:50.591 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.4.4.Final
+2026-08-06 03:54:50.627 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-08-06 03:54:50.854 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-06 03:54:50.884 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-08-06 03:54:51.123 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5ad6f98e
+2026-08-06 03:54:51.125 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-08-06 03:54:51.233 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-08-06 03:54:52.147 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-06 03:54:52.246 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-06 03:54:52.914 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-08-06 03:54:53.034 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@5cdafb4d, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@58ca1cad, org.springframework.security.web.context.SecurityContextHolderFilter@702ab027, org.springframework.security.web.header.HeaderWriterFilter@2b826482, org.springframework.web.filter.CorsFilter@5ae6119b, org.springframework.security.web.csrf.CsrfFilter@cfe72b0, org.springframework.security.web.authentication.logout.LogoutFilter@4c682826, com.portx.routesystem.security.JwtAuthFilter@3fe3ebb3, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@72ae1007, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@8929865, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@489989eb, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@31b6eec8, org.springframework.security.web.session.SessionManagementFilter@153c69bc, org.springframework.security.web.access.ExceptionTranslationFilter@321302bc, org.springframework.security.web.access.intercept.AuthorizationFilter@2314f013]
+2026-08-06 03:54:53.215 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-08-06 03:54:53.230 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-08-06 03:54:53.235 [main] INFO  c.p.r.RouteSystemApplication - Started RouteSystemApplication in 4.54 seconds (process running for 6.197)
+2026-08-06 03:54:53.238 [main] INFO  c.p.r.config.DataInitializer - Truncating database tables and resetting Auto-Increment counters to 1...
+2026-08-06 03:54:53.446 [main] INFO  c.p.r.config.DataInitializer - Database tables truncated and Auto-Increment counters reset to 1 successfully.
+2026-08-06 03:54:53.623 [main] INFO  c.p.r.config.DataInitializer - Creating demo user [admin] with role [ADMIN]
+2026-08-06 03:54:53.733 [main] INFO  c.p.r.config.DataInitializer - Creating demo user [dispatcher] with role [DISPATCHER]
+2026-08-06 03:54:53.811 [main] INFO  c.p.r.config.DataInitializer - Creating demo user [driver1] with role [DRIVER]
+2026-08-06 03:54:53.904 [main] INFO  c.p.r.config.DataInitializer - 5 Sample Vehicles initialized (IDs 1-5)
+2026-08-06 03:54:53.918 [main] INFO  c.p.r.config.DataInitializer - 5 Sample Drivers initialized (IDs 1-5)
+2026-08-06 03:54:53.934 [main] INFO  c.p.r.config.DataInitializer - 5 Sample Routes initialized (IDs 1-5)
+2026-08-06 03:54:54.014 [main] INFO  c.p.r.config.DataInitializer - 5 Sample Deliveries initialized with synced Vehicle IN_TRANSIT and Driver ON_DUTY status
+2026-08-06 03:54:54.014 [main] INFO  c.p.r.config.DataInitializer - PortX Logistics ready - http://localhost:8080

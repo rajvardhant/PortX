@@ -19,12 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
- * SecurityConfig — Central Spring Security configuration.
- *
- * PURPOSE:
- * 1. Configures form-based login and logout for Admin, Dispatcher, and Driver roles.
- * 2. Enforces BCrypt password encoding for system users.
- * 3. Integrates JWT filter for REST APIs.
+ * SecurityConfig - Central Spring Security configuration.
  */
 @Configuration
 @EnableWebSecurity

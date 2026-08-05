@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * AdminController — Backend REST API for Admin Module.
+ * AdminController - Backend REST API for Admin Module.
  * Responsible for system setup, user management, fleet config, orders, and reports.
  */
 @RestController
@@ -27,7 +27,7 @@ public class AdminController {
     private final DeliveryService deliveryService;
     private final DashboardService dashboardService;
 
-    // ── 1. USER MANAGEMENT ──────────────────────────────────────────────────
+    // USER MANAGEMENT
     @PostMapping("/users")
     public ResponseEntity<User> createUser(@RequestBody RegisterRequest req) {
         return ResponseEntity.ok(userService.createUser(req));
@@ -49,7 +49,7 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    // ── 2. VEHICLE MANAGEMENT ───────────────────────────────────────────────
+    // VEHICLE MANAGEMENT
     @PostMapping("/vehicles")
     public ResponseEntity<VehicleResponse> createVehicle(@RequestBody VehicleRequest req) {
         return ResponseEntity.ok(vehicleService.createVehicle(req));
@@ -60,7 +60,7 @@ public class AdminController {
         return ResponseEntity.ok(vehicleService.getAllVehicles());
     }
 
-    // ── 3. DELIVERY ORDERS MANAGEMENT ───────────────────────────────────────
+    // DELIVERY ORDERS MANAGEMENT
     @PostMapping("/orders")
     public ResponseEntity<DeliveryResponse> createOrder(@RequestBody DeliveryRequest req) {
         return ResponseEntity.ok(deliveryService.createDelivery(req));
@@ -71,7 +71,7 @@ public class AdminController {
         return ResponseEntity.ok(deliveryService.getAllDeliveries());
     }
 
-    // ── 4. DASHBOARD & REPORTS ──────────────────────────────────────────────
+    // DASHBOARD & REPORTS
     @GetMapping("/dashboard")
     public ResponseEntity<DashboardStats> getDashboardStats() {
         return ResponseEntity.ok(dashboardService.getStats());

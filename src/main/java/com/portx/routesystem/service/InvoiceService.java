@@ -13,72 +13,57 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * InvoiceService — Business logic layer for managing Rupee (₹) GST Invoices.
- *
- * PURPOSE:
- * 1. Handles listing, detail retrieval, and payment status updates (PENDING / PAID) for invoices.
- * 2. Formats financial amounts for clean screen display and PDF downloads.
+ * InvoiceService - Business logic layer for managing Rupee GST Invoices.
  */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class InvoiceService {
 
-    // Database access repository for Invoice entities
     private final InvoiceRepository invoiceRepository;
 
-    /**
-     * Retrieves all invoices in the system.
-     */
     public List<InvoiceResponse> getAllInvoices() {
         return invoiceRepository.findAll().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Finds an invoice by its primary key ID or throws ResourceNotFoundException.
-     */
     public InvoiceResponse getInvoiceById(Long id) {
         Invoice invoice = invoiceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Invoice", id));
         return mapToResponse(invoice);
     }
 
-    /**
-     * Finds an invoice linked to a specific delivery ID.
-     */
     public InvoiceResponse getInvoiceByDeliveryId(Long deliveryId) {
         Invoice invoice = invoiceRepository.findByDelivery_DeliveryId(deliveryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Invoice for Delivery", deliveryId));
+                .orElseThrow(() -> new ResourceNotFoundException("Invoice for Delivery ID", deliveryId));
         return mapToResponse(invoice);
     }
 
-    /**
-     * Updates invoice payment status (e.g. to PAID).
-     */
     @Transactional
-    public InvoiceResponse updateInvoiceStatus(Long id, String status) {
+    public InvoiceResponse updateInvoiceStatus(Long id, String statusStr) {
         Invoice invoice = invoiceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Invoice", id));
-                
-        invoice.setStatus(InvoiceStatus.valueOf(status.toUpperCase()));
+
+        InvoiceStatus status = InvoiceStatus.valueOf(statusStr.toUpperCase());
+        invoice.setStatus(status);
+
         return mapToResponse(invoiceRepository.save(invoice));
     }
 
-    /**
-     * Maps Invoice JPA entity to InvoiceResponse DTO.
-     */
-    private InvoiceResponse mapToResponse(Invoice i) {
-        return InvoiceResponse.builder()
-                .invoiceId(i.getInvoiceId())
-                .deliveryId(i.getDelivery() != null ? i.getDelivery().getDeliveryId() : null)
-                .customerName(i.getCustomerName())
-                .invoiceDate(i.getInvoiceDate())
-                .amount(i.getAmount())
-                .status(i.getStatus())
-                .remarks(i.getRemarks())
-                .createdAt(i.getCreatedAt())
-                .build();
+    private InvoiceResponse mapToResponse(Invoice inv) {
+        InvoiceResponse.InvoiceResponseBuilder builder = InvoiceResponse.builder()
+                .invoiceId(inv.getInvoiceId())
+                .customerName(inv.getCustomerName())
+                .invoiceDate(inv.getInvoiceDate())
+                .amount(inv.getAmount())
+                .status(inv.getStatus())
+                .remarks(inv.getRemarks());
+
+        if (inv.getDelivery() != null) {
+            builder.deliveryId(inv.getDelivery().getDeliveryId());
+        }
+
+        return builder.build();
     }
 }

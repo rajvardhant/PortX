@@ -22,18 +22,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * WebController — Main MVC Controller handling page navigation and HTML form submissions.
- *
- * PURPOSE:
- * 1. Serves public landing page, services, login, registration, and logout handlers.
- * 2. Provides distinct role-based dashboard views and permission enforcement.
- * 3. Handles form POST/GET actions for Drivers, Vehicles, Routes, Deliveries, and Invoices.
+ * WebController - Main MVC Controller handling page navigation and HTML form submissions.
  */
 @Controller
 @RequiredArgsConstructor
 public class WebController {
 
-    // Inject service layer components for business logic and model binding
     private final DriverService driverService;
     private final VehicleService vehicleService;
     private final RouteService routeService;
@@ -43,47 +37,38 @@ public class WebController {
     private final UserRepository userRepository;
     private final DriverRepository driverRepository;
 
-    // ────────────────────────────────────────────────────────────────────────
     // PUBLIC & AUTHENTICATION PAGES
-    // ────────────────────────────────────────────────────────────────────────
 
-    /** Serves public landing page */
     @GetMapping("/")
     public String index() {
         return "index";
     }
 
-    /** Serves public services overview page */
     @GetMapping("/services")
     public String services() {
         return "public/services";
     }
 
-    /** Serves public about page */
     @GetMapping("/about")
     public String about() {
         return "public/about";
     }
 
-    /** Serves public contact support page */
     @GetMapping("/contact")
     public String contact() {
         return "public/contact";
     }
 
-    /** Serves login portal page */
     @GetMapping("/login")
     public String login() {
         return "auth/login";
     }
 
-    /** Serves register account page */
     @GetMapping("/register")
     public String register() {
         return "auth/register";
     }
 
-    /** Handles user logout via GET request */
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -93,13 +78,11 @@ public class WebController {
         return "redirect:/login?logout";
     }
 
-    /** Serves 403 access denied page */
     @GetMapping("/403")
     public String accessDenied() {
         return "error/403";
     }
 
-    /** Dynamically redirects logged-in user to their role-specific dashboard */
     @GetMapping("/dashboard")
     public String dashboard() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -113,11 +96,8 @@ public class WebController {
         return "redirect:/admin/dashboard";
     }
 
-    // ────────────────────────────────────────────────────────────────────────
-    // ADMIN DASHBOARD
-    // ────────────────────────────────────────────────────────────────────────
+    // DASHBOARDS
 
-    /** Loads Admin overview dashboard with system statistics and status charts */
     @GetMapping("/admin/dashboard")
     @PreAuthorize("hasRole('ADMIN')")
     public String adminDashboard(Model model) {
@@ -128,11 +108,6 @@ public class WebController {
         return "admin/dashboard";
     }
 
-    // ────────────────────────────────────────────────────────────────────────
-    // DISPATCHER DASHBOARD (Uses same visual dashboard design as Admin)
-    // ────────────────────────────────────────────────────────────────────────
-
-    /** Serves Dispatcher Operations Dashboard using the full Admin dashboard UI */
     @GetMapping("/dispatcher/dashboard")
     @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
     public String dispatcherDashboard(Model model) {
@@ -143,11 +118,8 @@ public class WebController {
         return "admin/dashboard";
     }
 
-    // ────────────────────────────────────────────────────────────────────────
     // DRIVER PORTAL & HISTORY
-    // ────────────────────────────────────────────────────────────────────────
 
-    /** Serves Driver Portal showing active assigned deliveries for logged-in driver */
     @GetMapping("/driver/dashboard")
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public String driverDashboard(Model model) {
@@ -183,7 +155,6 @@ public class WebController {
         return "driver/dashboard";
     }
 
-    /** Serves Driver Delivery History showing completed shipments */
     @GetMapping("/driver/history")
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER')")
     public String driverHistory(Model model) {
@@ -218,7 +189,6 @@ public class WebController {
         return "driver/history";
     }
 
-    /** Updates delivery status from Driver Portal */
     @RequestMapping(value = "/driver/deliveries/{id}/status", method = {RequestMethod.GET, RequestMethod.POST})
     @PreAuthorize("hasAnyRole('ADMIN', 'DRIVER', 'DISPATCHER')")
     public String updateDriverDeliveryStatus(@PathVariable Long id, @RequestParam String status) {
@@ -226,11 +196,8 @@ public class WebController {
         return "redirect:/driver/dashboard";
     }
 
-    // ────────────────────────────────────────────────────────────────────────
-    // DRIVER MANAGEMENT (Admin full CRUD, Dispatcher Read-Only)
-    // ────────────────────────────────────────────────────────────────────────
+    // DRIVER MANAGEMENT
 
-    /** Displays driver directory table */
     @GetMapping("/admin/drivers")
     @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
     public String listDrivers(Model model) {
@@ -239,7 +206,6 @@ public class WebController {
         return "admin/drivers";
     }
 
-    /** Opens Add Driver form (Admin Only) */
     @GetMapping("/admin/drivers/new")
     @PreAuthorize("hasRole('ADMIN')")
     public String newDriverForm(Model model) {
@@ -249,7 +215,6 @@ public class WebController {
         return "admin/driver-form";
     }
 
-    /** Opens Edit Driver form pre-filled with driver details (Admin Only) */
     @GetMapping("/admin/drivers/{id}/edit")
     @PreAuthorize("hasRole('ADMIN')")
     public String editDriverForm(@PathVariable Long id, Model model) {
@@ -268,7 +233,6 @@ public class WebController {
         return "admin/driver-form";
     }
 
-    /** Saves new or updated Driver record (Admin Only) */
     @PostMapping("/admin/drivers/save")
     @PreAuthorize("hasRole('ADMIN')")
     public String saveDriver(@ModelAttribute("driverRequest") DriverRequest request) {
@@ -280,7 +244,6 @@ public class WebController {
         return "redirect:/admin/drivers";
     }
 
-    /** Deletes driver record (Admin Only) */
     @PostMapping("/admin/drivers/{id}/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public String deleteDriver(@PathVariable Long id) {
@@ -288,11 +251,8 @@ public class WebController {
         return "redirect:/admin/drivers";
     }
 
-    // ────────────────────────────────────────────────────────────────────────
-    // VEHICLE MANAGEMENT (Admin full CRUD, Dispatcher Read-Only)
-    // ────────────────────────────────────────────────────────────────────────
+    // VEHICLE MANAGEMENT
 
-    /** Displays vehicle directory table */
     @GetMapping("/admin/vehicles")
     @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
     public String listVehicles(Model model) {
@@ -300,7 +260,6 @@ public class WebController {
         return "admin/vehicles";
     }
 
-    /** Opens Add Vehicle form (Admin Only) */
     @GetMapping("/admin/vehicles/new")
     @PreAuthorize("hasRole('ADMIN')")
     public String newVehicleForm(Model model) {
@@ -309,7 +268,6 @@ public class WebController {
         return "admin/vehicle-form";
     }
 
-    /** Opens Edit Vehicle form (Admin Only) */
     @GetMapping("/admin/vehicles/{id}/edit")
     @PreAuthorize("hasRole('ADMIN')")
     public String editVehicleForm(@PathVariable Long id, Model model) {
@@ -325,7 +283,6 @@ public class WebController {
         return "admin/vehicle-form";
     }
 
-    /** Saves new or updated Vehicle record (Admin Only) */
     @PostMapping("/admin/vehicles/save")
     @PreAuthorize("hasRole('ADMIN')")
     public String saveVehicle(@ModelAttribute("vehicleRequest") VehicleRequest request) {
@@ -337,7 +294,6 @@ public class WebController {
         return "redirect:/admin/vehicles";
     }
 
-    /** Deletes vehicle record (Admin Only) */
     @PostMapping("/admin/vehicles/{id}/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public String deleteVehicle(@PathVariable Long id) {
@@ -345,11 +301,8 @@ public class WebController {
         return "redirect:/admin/vehicles";
     }
 
-    // ────────────────────────────────────────────────────────────────────────
     // ROUTE MANAGEMENT
-    // ────────────────────────────────────────────────────────────────────────
 
-    /** Displays generated routes table */
     @GetMapping("/admin/routes")
     @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
     public String listRoutes(Model model) {
@@ -357,14 +310,12 @@ public class WebController {
         return "admin/routes";
     }
 
-    /** Opens Calculate Route Distance page (Admin & Dispatcher) */
     @GetMapping("/admin/routes/new")
     @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
     public String newRouteForm() {
         return "admin/route-form";
     }
 
-    /** Deletes route record (Admin Only) */
     @PostMapping("/admin/routes/{id}/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public String deleteRoute(@PathVariable Long id) {
@@ -372,11 +323,8 @@ public class WebController {
         return "redirect:/admin/routes";
     }
 
-    // ────────────────────────────────────────────────────────────────────────
-    // DELIVERY MANAGEMENT (CRUD)
-    // ────────────────────────────────────────────────────────────────────────
+    // DELIVERY MANAGEMENT
 
-    /** Displays deliveries directory table */
     @GetMapping({"/admin/deliveries", "/dispatcher/deliveries"})
     @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
     public String listDeliveries(Model model) {
@@ -387,7 +335,6 @@ public class WebController {
         return "admin/deliveries";
     }
 
-    /** Opens Create Delivery form */
     @GetMapping({"/admin/deliveries/new", "/dispatcher/deliveries/new"})
     @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
     public String newDeliveryForm(Model model) {
@@ -398,7 +345,6 @@ public class WebController {
         return "admin/delivery-form";
     }
 
-    /** Opens Edit Delivery form */
     @GetMapping({"/admin/deliveries/{id}/edit", "/dispatcher/deliveries/{id}/edit"})
     @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
     public String editDeliveryForm(@PathVariable Long id, Model model) {
@@ -421,7 +367,6 @@ public class WebController {
         return "admin/delivery-form";
     }
 
-    /** Saves new or updated Delivery record */
     @PostMapping({"/admin/deliveries/save", "/dispatcher/deliveries/save"})
     @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
     public String saveDelivery(@ModelAttribute("deliveryRequest") DeliveryRequest request) {
@@ -436,7 +381,6 @@ public class WebController {
         return "redirect:/admin/deliveries";
     }
 
-    /** Deletes delivery record */
     @PostMapping({"/admin/deliveries/{id}/delete", "/dispatcher/deliveries/{id}/delete"})
     @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
     public String deleteDelivery(@PathVariable Long id) {
@@ -444,11 +388,8 @@ public class WebController {
         return "redirect:/admin/deliveries";
     }
 
-    // ────────────────────────────────────────────────────────────────────────
     // INVOICE MANAGEMENT
-    // ────────────────────────────────────────────────────────────────────────
 
-    /** Displays all invoices table */
     @GetMapping("/invoices")
     @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
     public String listInvoices(Model model) {
@@ -456,7 +397,6 @@ public class WebController {
         return "invoice/list";
     }
 
-    /** Displays individual invoice detail view card */
     @GetMapping("/invoices/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
     public String invoiceDetail(@PathVariable Long id, Model model) {
@@ -464,7 +404,6 @@ public class WebController {
         return "invoice/detail";
     }
 
-    /** Marks invoice as PAID */
     @PostMapping("/invoices/{id}/pay")
     @PreAuthorize("hasAnyRole('ADMIN', 'DISPATCHER')")
     public String payInvoice(@PathVariable Long id) {

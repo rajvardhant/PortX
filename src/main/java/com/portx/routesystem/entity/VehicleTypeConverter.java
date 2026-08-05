@@ -4,10 +4,8 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 /**
- * VehicleTypeConverter — Auto-applied JPA Attribute Converter.
+ * VehicleTypeConverter - Auto-applied JPA Attribute Converter.
  * Safely converts database strings to VehicleType enum attributes.
- * Intercepts any legacy 'BIKE' database records and maps them to 'VAN'
- * without throwing IllegalArgumentException 500 errors!
  */
 @Converter(autoApply = true)
 public class VehicleTypeConverter implements AttributeConverter<VehicleType, String> {

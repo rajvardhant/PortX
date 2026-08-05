@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DataInitializer — Runs on application startup.
+ * DataInitializer - Runs on application startup.
  * Truncates database tables to reset AUTO_INCREMENT primary key counters back to 1
  * and populates EXACTLY 5 clean sample records in each category (IDs 1, 2, 3, 4, 5).
  * Enables distinct role demo login accounts (admin, dispatcher, driver1).
@@ -36,9 +36,9 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
 
-        // ── 0. TRUNCATE TABLES & RESET AUTO-INCREMENT COUNTERS TO 1 ───────
+        // 0. TRUNCATE TABLES & RESET AUTO-INCREMENT COUNTERS TO 1
         try {
-            log.info("🧹 Truncating database tables and resetting Auto-Increment counters to 1...");
+            log.info("Truncating database tables and resetting Auto-Increment counters to 1...");
             jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 0");
             jdbcTemplate.execute("TRUNCATE TABLE invoices");
             jdbcTemplate.execute("TRUNCATE TABLE deliveries");
@@ -47,7 +47,7 @@ public class DataInitializer implements CommandLineRunner {
             jdbcTemplate.execute("TRUNCATE TABLE vehicles");
             jdbcTemplate.execute("TRUNCATE TABLE users");
             jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 1");
-            log.info("✅ Database tables truncated and Auto-Increment counters reset to 1");
+            log.info("Database tables truncated and Auto-Increment counters reset to 1 successfully.");
         } catch (Exception e) {
             log.warn("Database reset notice: {}", e.getMessage());
             try {
@@ -55,12 +55,12 @@ public class DataInitializer implements CommandLineRunner {
             } catch (Exception ignored) {}
         }
 
-        // ── 1. DISTINCT ROLE DEMO SYSTEM USERS (ADMIN, DISPATCHER, DRIVER) ─
+        // 1. DISTINCT ROLE DEMO SYSTEM USERS (ADMIN, DISPATCHER, DRIVER)
         User adminUser      = createOrUpdateUser("admin",      "admin123", "admin@portx.com",      "System Administrator", UserRole.ADMIN);
         User dispatcherUser = createOrUpdateUser("dispatcher", "admin123", "dispatcher@portx.com", "John Dispatcher",      UserRole.DISPATCHER);
         User driverUser     = createOrUpdateUser("driver1",    "admin123", "driver1@portx.com",    "Mike Driver",          UserRole.DRIVER);
 
-        // ── 2. EXACTLY 5 SAMPLE VEHICLES (IDs 1 to 5) ─────────────────────
+        // 2. EXACTLY 5 SAMPLE VEHICLES (IDs 1 to 5)
         List<Vehicle> vehicles = new ArrayList<>();
         String[][] sampleVehicles = {
             {"MH01AB1234", "TRUCK", "5000.0"},
@@ -79,9 +79,9 @@ public class DataInitializer implements CommandLineRunner {
                     .build());
             vehicles.add(v);
         }
-        log.info("✅ 5 Sample Vehicles initialized (IDs 1-5)");
+        log.info("5 Sample Vehicles initialized (IDs 1-5)");
 
-        // ── 3. EXACTLY 5 SAMPLE DRIVERS (IDs 1 to 5) ──────────────────────
+        // 3. EXACTLY 5 SAMPLE DRIVERS (IDs 1 to 5)
         List<Driver> drivers = new ArrayList<>();
         String[][] sampleDrivers = {
             {"Mike Driver",      "9876543210", "MH1234567"},
@@ -106,9 +106,9 @@ public class DataInitializer implements CommandLineRunner {
                     .build());
             drivers.add(d);
         }
-        log.info("✅ 5 Sample Drivers initialized (IDs 1-5)");
+        log.info("5 Sample Drivers initialized (IDs 1-5)");
 
-        // ── 4. EXACTLY 5 SAMPLE ROUTES (IDs 1 to 5) ───────────────────────
+        // 4. EXACTLY 5 SAMPLE ROUTES (IDs 1 to 5)
         List<Route> routes = new ArrayList<>();
         String[][] sampleRoutes = {
             {"Mumbai Central", "Andheri East, Mumbai", "18.5", "45 mins", "18.9696", "72.8193", "19.1136", "72.8697"},
@@ -133,9 +133,9 @@ public class DataInitializer implements CommandLineRunner {
                     .build());
             routes.add(r);
         }
-        log.info("✅ 5 Sample Routes initialized (IDs 1-5)");
+        log.info("5 Sample Routes initialized (IDs 1-5)");
 
-        // ── 5. EXACTLY 5 SAMPLE DELIVERIES & INVOICES (IDs 1 to 5) ────────
+        // 5. EXACTLY 5 SAMPLE DELIVERIES & INVOICES (IDs 1 to 5)
         String[][] sampleDeliveries = {
             {"Sunny", "123 Anywhere St., Mumbai", "15.5", "PENDING"},
             {"Rajesh Transport", "456 Commerce Rd., Thane", "45.0", "ASSIGNED"},
@@ -183,11 +183,9 @@ public class DataInitializer implements CommandLineRunner {
                     .remarks("Auto-generated invoice for Delivery #" + delivery.getDeliveryId())
                     .build());
         }
-        log.info("✅ 5 Sample Deliveries initialized with synced Vehicle IN_TRANSIT and Driver ON_DUTY status");
+        log.info("5 Sample Deliveries initialized with synced Vehicle IN_TRANSIT and Driver ON_DUTY status");
 
-        log.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        log.info("🚀 PortX Logistics ready → http://localhost:8080");
-        log.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        log.info("PortX Logistics ready - http://localhost:8080");
     }
 
     private User createOrUpdateUser(String username, String rawPassword,
@@ -201,7 +199,7 @@ public class DataInitializer implements CommandLineRunner {
                     .fullName(fullName)
                     .role(role)
                     .build();
-            log.info("✅ Creating demo user [{}] with role [{}]", username, role);
+            log.info("Creating demo user [{}] with role [{}]", username, role);
         } else {
             user.setRole(role);
         }

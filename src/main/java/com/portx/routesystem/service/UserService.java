@@ -2,6 +2,7 @@ package com.portx.routesystem.service;
 
 import com.portx.routesystem.dto.RegisterRequest;
 import com.portx.routesystem.entity.User;
+import com.portx.routesystem.entity.UserRole;
 import com.portx.routesystem.exception.ResourceNotFoundException;
 import com.portx.routesystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * UserService — Business logic for Admin User Management (Admin, Dispatcher, Driver).
+ * UserService - Business logic for Admin User Management (Admin, Dispatcher, Driver).
  */
 @Service
 @RequiredArgsConstructor
@@ -38,11 +39,11 @@ public class UserService {
         }
 
         User user = User.builder()
+                .fullName(req.getFullName().trim())
                 .username(req.getUsername().trim())
-                .password(passwordEncoder.encode(req.getPassword()))
-                .email(req.getEmail())
-                .fullName(req.getFullName())
-                .role(req.getRole())
+                .email(req.getEmail().trim())
+                .password(passwordEncoder.encode(req.getPassword().trim()))
+                .role(req.getRole() != null ? req.getRole() : UserRole.DISPATCHER)
                 .build();
 
         return userRepository.save(user);
@@ -53,13 +54,16 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", id));
 
-        user.setFullName(req.getFullName());
-        user.setEmail(req.getEmail());
+        user.setFullName(req.getFullName().trim());
+        user.setEmail(req.getEmail().trim());
+        user.setUsername(req.getUsername().trim());
+
         if (req.getRole() != null) {
             user.setRole(req.getRole());
         }
+
         if (req.getPassword() != null && !req.getPassword().trim().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(req.getPassword()));
+            user.setPassword(passwordEncoder.encode(req.getPassword().trim()));
         }
 
         return userRepository.save(user);

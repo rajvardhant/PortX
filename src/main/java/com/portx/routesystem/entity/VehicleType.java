@@ -3,13 +3,13 @@ package com.portx.routesystem.entity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 /**
- * VehicleType Enum — Defines commercial vehicle categories (TRUCK, VAN).
+ * VehicleType Enum - Defines commercial vehicle categories (TRUCK, VAN).
  * Includes robust fallback logic for legacy BIKE values.
  */
 public enum VehicleType {
     TRUCK,
     VAN,
-    BIKE; // Retained for backwards database compatibility
+    BIKE;
 
     @JsonCreator
     public static VehicleType fromString(String key) {
