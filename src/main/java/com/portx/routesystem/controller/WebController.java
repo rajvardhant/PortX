@@ -46,17 +46,17 @@ public class WebController {
 
     @GetMapping("/services")
     public String services() {
-        return "public/services";
+        return "redirect:/#services";
     }
 
     @GetMapping("/about")
     public String about() {
-        return "public/about";
+        return "redirect:/#about";
     }
 
     @GetMapping("/contact")
     public String contact() {
-        return "public/contact";
+        return "redirect:/#contact";
     }
 
     @GetMapping("/login")

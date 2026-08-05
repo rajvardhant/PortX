@@ -34,3 +34,93 @@
 2026-08-06 03:54:53.934 [main] INFO  c.p.r.config.DataInitializer - 5 Sample Routes initialized (IDs 1-5)
 2026-08-06 03:54:54.014 [main] INFO  c.p.r.config.DataInitializer - 5 Sample Deliveries initialized with synced Vehicle IN_TRANSIT and Driver ON_DUTY status
 2026-08-06 03:54:54.014 [main] INFO  c.p.r.config.DataInitializer - PortX Logistics ready - http://localhost:8080
+2026-08-06 03:55:53.964 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-06 03:55:53.969 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-08-06 03:55:53.985 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 15 ms
+2026-08-06 03:55:55.197 [http-nio-8080-exec-1] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET / -> Status 200 [806ms]
+2026-08-06 03:55:55.841 [http-nio-8080-exec-5] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [367ms]
+2026-08-06 03:56:02.042 [http-nio-8080-exec-6] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /services -> Status 200 [11ms]
+2026-08-06 03:56:02.147 [http-nio-8080-exec-10] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [13ms]
+2026-08-06 03:56:04.190 [http-nio-8080-exec-1] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /about -> Status 200 [10ms]
+2026-08-06 03:56:04.559 [http-nio-8080-exec-5] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [13ms]
+2026-08-06 03:56:06.056 [http-nio-8080-exec-6] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /contact -> Status 200 [15ms]
+2026-08-06 03:56:06.138 [http-nio-8080-exec-10] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [9ms]
+2026-08-06 03:56:09.863 [http-nio-8080-exec-1] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET / -> Status 200 [10ms]
+2026-08-06 03:56:09.949 [http-nio-8080-exec-5] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [13ms]
+2026-08-06 04:03:59.810 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-08-06 04:03:59.952 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-08-06 04:04:01.162 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-08-06 04:04:14.264 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-08-06 04:04:14.314 [main] INFO  c.p.r.RouteSystemApplication - Starting RouteSystemApplication using Java 17.0.19 with PID 6936 (D:\PortX\dynamic-route-system\target\classes started by raj in D:\PortX\dynamic-route-system)
+2026-08-06 04:04:14.316 [main] INFO  c.p.r.RouteSystemApplication - No active profile set, falling back to 1 default profile: "default"
+2026-08-06 04:04:15.162 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-06 04:04:15.223 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 52 ms. Found 6 JPA repository interfaces.
+2026-08-06 04:04:15.879 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-08-06 04:04:15.891 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-08-06 04:04:15.894 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-08-06 04:04:15.894 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.20]
+2026-08-06 04:04:15.952 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-08-06 04:04:15.953 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1576 ms
+2026-08-06 04:04:16.088 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-08-06 04:04:16.167 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.4.4.Final
+2026-08-06 04:04:16.202 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-08-06 04:04:16.455 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-06 04:04:16.486 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-08-06 04:04:16.740 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@586728e8
+2026-08-06 04:04:16.742 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-08-06 04:04:16.840 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-08-06 04:04:17.768 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-06 04:04:17.879 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-06 04:04:18.614 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-08-06 04:04:18.765 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@5cdafb4d, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@58ca1cad, org.springframework.security.web.context.SecurityContextHolderFilter@702ab027, org.springframework.security.web.header.HeaderWriterFilter@2b826482, org.springframework.web.filter.CorsFilter@5ae6119b, org.springframework.security.web.csrf.CsrfFilter@cfe72b0, org.springframework.security.web.authentication.logout.LogoutFilter@4c682826, com.portx.routesystem.security.JwtAuthFilter@22a1d77b, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@72ae1007, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@8929865, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@489989eb, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@31b6eec8, org.springframework.security.web.session.SessionManagementFilter@153c69bc, org.springframework.security.web.access.ExceptionTranslationFilter@321302bc, org.springframework.security.web.access.intercept.AuthorizationFilter@2314f013]
+2026-08-06 04:04:18.989 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-08-06 04:04:19.006 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-08-06 04:04:19.011 [main] INFO  c.p.r.RouteSystemApplication - Started RouteSystemApplication in 5.354 seconds (process running for 5.914)
+2026-08-06 04:04:19.014 [main] INFO  c.p.r.config.DataInitializer - Truncating database tables and resetting Auto-Increment counters to 1...
+2026-08-06 04:04:19.231 [main] INFO  c.p.r.config.DataInitializer - Database tables truncated and Auto-Increment counters reset to 1 successfully.
+2026-08-06 04:04:19.360 [main] INFO  c.p.r.config.DataInitializer - Creating demo user [admin] with role [ADMIN]
+2026-08-06 04:04:19.505 [main] INFO  c.p.r.config.DataInitializer - Creating demo user [dispatcher] with role [DISPATCHER]
+2026-08-06 04:04:19.610 [main] INFO  c.p.r.config.DataInitializer - Creating demo user [driver1] with role [DRIVER]
+2026-08-06 04:04:19.720 [main] INFO  c.p.r.config.DataInitializer - 5 Sample Vehicles initialized (IDs 1-5)
+2026-08-06 04:04:19.743 [main] INFO  c.p.r.config.DataInitializer - 5 Sample Drivers initialized (IDs 1-5)
+2026-08-06 04:04:19.762 [main] INFO  c.p.r.config.DataInitializer - 5 Sample Routes initialized (IDs 1-5)
+2026-08-06 04:04:19.845 [main] INFO  c.p.r.config.DataInitializer - 5 Sample Deliveries initialized with synced Vehicle IN_TRANSIT and Driver ON_DUTY status
+2026-08-06 04:04:19.845 [main] INFO  c.p.r.config.DataInitializer - PortX Logistics ready - http://localhost:8080
+2026-08-06 04:04:59.271 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-06 04:04:59.296 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-08-06 04:04:59.380 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 82 ms
+2026-08-06 04:05:00.407 [http-nio-8080-exec-1] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET / -> Status 200 [840ms]
+2026-08-06 04:05:01.251 [http-nio-8080-exec-5] WARN  o.a.c.util.SessionIdGeneratorBase - Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [126] milliseconds.
+2026-08-06 04:05:01.270 [http-nio-8080-exec-5] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [503ms]
+2026-08-06 04:05:17.049 [http-nio-8080-exec-3] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [22ms]
+2026-08-06 04:05:19.113 [http-nio-8080-exec-9] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [13ms]
+2026-08-06 04:05:41.416 [http-nio-8080-exec-1] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [6ms]
+2026-08-06 04:06:46.945 [http-nio-8080-exec-4] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [14ms]
+2026-08-06 04:06:47.098 [http-nio-8080-exec-6] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [11ms]
+2026-08-06 04:06:51.986 [http-nio-8080-exec-8] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /dashboard -> Status 302 [44ms]
+2026-08-06 04:06:53.279 [http-nio-8080-exec-9] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /admin/dashboard -> Status 200 [1277ms]
+2026-08-06 04:06:57.455 [http-nio-8080-exec-6] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [11ms]
+2026-08-06 04:06:57.529 [http-nio-8080-exec-8] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [9ms]
+2026-08-06 04:06:59.629 [http-nio-8080-exec-10] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET / -> Status 200 [13ms]
+2026-08-06 04:06:59.752 [http-nio-8080-exec-2] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [8ms]
+2026-08-06 04:11:52.605 [http-nio-8080-exec-6] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET / -> Status 200 [581ms]
+2026-08-06 04:11:52.815 [http-nio-8080-exec-9] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [50ms]
+2026-08-06 04:12:21.576 [http-nio-8080-exec-1] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET / -> Status 200 [17ms]
+2026-08-06 04:12:21.685 [http-nio-8080-exec-4] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [26ms]
+2026-08-06 04:18:42.268 [http-nio-8080-exec-6] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET / -> Status 200 [248ms]
+2026-08-06 04:18:42.550 [http-nio-8080-exec-2] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [38ms]
+2026-08-06 04:18:43.800 [http-nio-8080-exec-7] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [12ms]
+2026-08-06 04:18:43.884 [http-nio-8080-exec-4] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [11ms]
+2026-08-06 04:21:34.912 [http-nio-8080-exec-6] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [96ms]
+2026-08-06 04:21:35.034 [http-nio-8080-exec-9] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [9ms]
+2026-08-06 04:21:54.904 [http-nio-8080-exec-1] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET / -> Status 200 [30ms]
+2026-08-06 04:21:55.071 [http-nio-8080-exec-4] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [12ms]
+2026-08-06 04:24:57.652 [http-nio-8080-exec-6] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET / -> Status 200 [40ms]
+2026-08-06 04:24:57.764 [http-nio-8080-exec-2] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [22ms]
+2026-08-06 04:27:40.493 [http-nio-8080-exec-4] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET / -> Status 200 [193ms]
+2026-08-06 04:27:40.713 [http-nio-8080-exec-9] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [22ms]
+2026-08-06 04:30:24.837 [http-nio-8080-exec-2] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET / -> Status 200 [34ms]
+2026-08-06 04:30:25.235 [http-nio-8080-exec-8] INFO  c.p.r.config.RequestLoggingFilter - HTTP GET /login -> Status 200 [19ms]
+2026-08-06 04:32:41.140 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-08-06 04:32:41.234 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-08-06 04:32:41.449 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

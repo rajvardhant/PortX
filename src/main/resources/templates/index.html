@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PortX — Intra-city Freight & Goods Delivery</title>
+    <title>PortX — Dynamic Commercial Route & Logistics Platform</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -11,34 +11,50 @@
     <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/style.css?v=1.1.5" rel="stylesheet">
+
     <style>
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
         .porter-hero {
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
-            color: white;
-            padding: 5rem 0 7rem;
+            background: linear-gradient(135deg, #0b1329 0%, #1e1b4b 50%, #311b92 100%);
+            color: #ffffff;
+            padding: 4rem 0 5rem;
             position: relative;
             overflow: hidden;
         }
         .porter-hero::before {
             content: '';
             position: absolute;
-            top: -50%; left: -20%;
-            width: 140%; height: 200%;
-            background: radial-gradient(circle at 70% 30%, rgba(99, 102, 241, 0.18) 0%, transparent 60%);
+            top: -20%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
             pointer-events: none;
         }
         .hero-badge {
-            background: rgba(99, 102, 241, 0.2);
-            border: 1px solid rgba(129, 140, 248, 0.4);
-            color: #c7d2fe;
-            padding: 0.4rem 1.2rem;
-            border-radius: 2rem;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e0e7ff;
             font-size: 0.875rem;
             font-weight: 600;
+            padding: 0.4rem 1rem;
+            border-radius: 50rem;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+        }
+        .vehicle-tabs-container {
+            display: flex;
+            gap: 0.75rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
         }
         .vehicle-tab-btn {
             border: 1px solid var(--card-border);
@@ -52,6 +68,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            white-space: nowrap;
         }
         .vehicle-tab-btn:hover, .vehicle-tab-btn.active {
             background: var(--primary);
@@ -69,12 +86,12 @@
             padding: 2rem;
         }
         .service-box {
+            background: var(--card-bg);
+            color: var(--text-main);
             border: 1px solid var(--card-border);
             border-radius: 1.25rem;
             padding: 2rem;
             transition: all 0.3s ease;
-            background: var(--card-bg);
-            color: var(--text-main);
         }
         .service-box:hover {
             transform: translateY(-8px);
@@ -87,6 +104,17 @@
             border-radius: 1.5rem;
             padding: 3rem 2rem;
         }
+        .contact-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        .contact-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.06);
+        }
     </style>
 </head>
 <body>
@@ -94,7 +122,7 @@
 <!-- Header Navigation -->
 <nav class="navbar navbar-expand-lg sticky-top border-bottom shadow-sm py-3" style="background-color: var(--navbar-bg);">
     <div class="container">
-        <a class="navbar-brand logo-container me-4" href="/">
+        <a class="navbar-brand logo-container me-4" href="#">
             <div class="logo-icon"><i class="bi bi-truck"></i></div>
             <span class="logo-text">PortX</span>
         </a>
@@ -105,10 +133,10 @@
 
         <div class="collapse navbar-collapse" id="navbarMain">
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0 fw-semibold">
-                <li class="nav-item"><a class="nav-link px-3" href="/" style="color: var(--text-main);">Home</a></li>
-                <li class="nav-item"><a class="nav-link px-3" href="/services" style="color: var(--text-main);">Services</a></li>
-                <li class="nav-item"><a class="nav-link px-3" href="/about" style="color: var(--text-main);">About Us</a></li>
-                <li class="nav-item"><a class="nav-link px-3" href="/contact" style="color: var(--text-main);">Contact</a></li>
+                <li class="nav-item"><a class="nav-link px-3" href="#" style="color: var(--text-main);">Home</a></li>
+                <li class="nav-item"><a class="nav-link px-3" href="#services" style="color: var(--text-main);">Services</a></li>
+                <li class="nav-item"><a class="nav-link px-3" href="#about" style="color: var(--text-main);">About Us</a></li>
+                <li class="nav-item"><a class="nav-link px-3" href="#contact" style="color: var(--text-main);">Contact</a></li>
             </ul>
 
             <div class="d-flex align-items-center gap-3">
@@ -117,8 +145,8 @@
                     <i class="bi bi-moon-stars-fill theme-toggle-icon"></i>
                 </button>
 
-                <a href="/login" class="btn btn-outline-primary fw-semibold px-4 rounded-pill">Portal Login</a>
-                <a href="/login" class="btn btn-primary fw-semibold px-4 rounded-pill shadow-sm">Book Delivery</a>
+                <!-- Single Portal Login Button (Book Delivery button removed as requested) -->
+                <a href="/login" class="btn btn-primary fw-semibold px-4 rounded-pill shadow-sm">Portal Login</a>
             </div>
         </div>
     </div>
@@ -138,65 +166,61 @@
                     <span style="color: #818cf8;">PortX Gets It Done!</span>
                 </h1>
                 <p class="lead opacity-85 mb-4 fs-5">
-                    On-demand commercial Mini Vans and Heavy Cargo Trucks at your fingertips. Fast, transparent per-km pricing.
+                    India's premier intra-city commercial logistics network. Real-time OpenRouteService optimization, automated GST invoices, and driver assignment.
                 </p>
-
-                <div class="d-flex flex-wrap gap-4 justify-content-center justify-content-lg-start opacity-90 small">
-                    <div class="d-flex align-items-center gap-2"><i class="bi bi-check-circle-fill text-success fs-5"></i> Live Distance Calculation</div>
-                    <div class="d-flex align-items-center gap-2"><i class="bi bi-check-circle-fill text-success fs-5"></i> Fixed Transparent Rupee Rates</div>
-                    <div class="d-flex align-items-center gap-2"><i class="bi bi-check-circle-fill text-success fs-5"></i> Verified Fleet Drivers</div>
+                <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-4 text-start">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                        <span class="fw-medium">Verified Drivers</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                        <span class="fw-medium">Per-KM Fare Transparency</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                        <span class="fw-medium">Live Dispatcher Control</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Right Fare Estimator Widget -->
+            <!-- Right Interactive Fare Estimator Card -->
             <div class="col-lg-6">
                 <div class="fare-card">
                     <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
-                        <i class="bi bi-calculator text-primary"></i> Estimate Delivery Fare
+                        <i class="bi bi-calculator-fill text-primary"></i> Instant Fare Estimator
                     </h5>
-
-                    <!-- Vehicle Category Selector Tabs (Mini Van & Pickup Truck) -->
-                    <div class="d-flex gap-2 mb-4 p-2 rounded-3" style="background: var(--input-bg);">
-                        <button type="button" class="vehicle-tab-btn active flex-fill justify-content-center" onclick="selectCategory(this, 100, 15)">
-                            <i class="bi bi-truck-front fs-5"></i> Mini Van
+                    
+                    <!-- Vehicle Category Selector -->
+                    <label class="form-label small fw-semibold text-muted mb-2">Select Vehicle Type</label>
+                    <div class="vehicle-tabs-container">
+                        <button type="button" class="vehicle-tab-btn active" onclick="selectCategory(this, 100, 15)">
+                            <i class="bi bi-truck-front text-success"></i> Mini Van
                         </button>
-                        <button type="button" class="vehicle-tab-btn flex-fill justify-content-center" onclick="selectCategory(this, 250, 30)">
-                            <i class="bi bi-truck fs-5"></i> Heavy Truck
+                        <button type="button" class="vehicle-tab-btn" onclick="selectCategory(this, 250, 25)">
+                            <i class="bi bi-truck text-primary"></i> Heavy Truck
                         </button>
                     </div>
 
-                    <!-- Pickup & Dropoff Inputs -->
+                    <!-- Pickup & Drop Locations -->
                     <div class="mb-3">
                         <label class="form-label small fw-semibold text-muted">Pickup Location</label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light text-primary"><i class="bi bi-geo-alt-fill"></i></span>
-                            <input type="text" id="calcStart" class="form-control" placeholder="e.g. Andheri East, Mumbai" value="Andheri East, Mumbai">
+                            <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-geo-alt-fill text-success"></i></span>
+                            <input type="text" id="calcStart" class="form-control border-start-0" value="Mumbai Central" placeholder="Enter pickup city/address">
                         </div>
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label small fw-semibold text-muted">Dropoff Location</label>
+                        <label class="form-label small fw-semibold text-muted">Drop Location</label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light text-danger"><i class="bi bi-geo-fill"></i></span>
-                            <input type="text" id="calcEnd" class="form-control" placeholder="e.g. Bandra West, Mumbai" value="Bandra West, Mumbai">
+                            <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-pin-map-fill text-danger"></i></span>
+                            <input type="text" id="calcEnd" class="form-control border-start-0" value="Andheri East, Mumbai" placeholder="Enter drop city/address">
                         </div>
                     </div>
 
-                    <!-- Fare Estimation Calculation Output in Rupee -->
-                    <div class="alert alert-primary bg-primary bg-opacity-10 border-0 rounded-3 p-3 mb-4 d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="small text-muted fw-semibold">Estimated Distance & Time</div>
-                            <div class="fw-bold" id="calcDistanceTime">~ 12.5 km (35 mins)</div>
-                        </div>
-                        <div class="text-end">
-                            <div class="small text-muted fw-semibold">Estimated Freight Cost</div>
-                            <div class="fs-4 fw-extrabold text-primary" id="calcFare">₹ 287.50</div>
-                        </div>
-                    </div>
-
-                    <a href="/login" class="btn btn-primary btn-lg w-100 fw-bold rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2">
-                        <span>Book Delivery / Login</span>
-                        <i class="bi bi-arrow-right"></i>
+                    <a href="/login" class="btn btn-primary w-100 py-3 fw-bold rounded-3 shadow">
+                        Log In to Book Delivery <i class="bi bi-arrow-right ms-2"></i>
                     </a>
                 </div>
             </div>
@@ -204,13 +228,13 @@
     </div>
 </section>
 
-<!-- Services Grid Section -->
-<section class="py-5" style="background-color: var(--body-bg);">
+<!-- SERVICES SECTION (#services) -->
+<section id="services" class="py-5" style="background-color: var(--body-bg);">
     <div class="container py-4">
         <div class="text-center mb-5">
-            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-semibold mb-2">Our Offerings</span>
-            <h2 class="display-6 fw-extrabold">Commercial Logistics Built for Enterprise</h2>
-            <p class="text-muted col-md-7 mx-auto">Whether you're moving commercial inventory, retail goods, or industrial raw materials, PortX provides the right fleet for you.</p>
+            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-semibold mb-2">Our Logistics Services</span>
+            <h2 class="display-6 fw-extrabold">Commercial Freight Built for Enterprise</h2>
+            <p class="text-muted col-md-7 mx-auto">Whether you're moving commercial inventory, retail goods, or industrial raw materials, PortX provides the optimal vehicle and driver.</p>
         </div>
 
         <div class="row g-4 justify-content-center">
@@ -220,9 +244,12 @@
                     <div class="p-3 bg-success bg-opacity-10 text-success rounded-3 d-inline-block mb-3">
                         <i class="bi bi-truck-front fs-2"></i>
                     </div>
-                    <h5 class="fw-bold mb-2">Mini Commercial Vans</h5>
-                    <p class="text-muted small mb-3">Perfect for retail stock, electronics, furniture, and light commercial goods up to 1500 kg.</p>
-                    <a href="/services" class="text-primary text-decoration-none fw-semibold small">Learn More <i class="bi bi-chevron-right"></i></a>
+                    <h5 class="fw-bold mb-2">Mini Van</h5>
+                    <p class="text-muted small mb-3">Ideal for retail inventory, FMCG, electronics, and light commercial goods up to 1,500 kg capacity.</p>
+                    <ul class="list-unstyled small text-muted mb-0">
+                        <li class="mb-1"><i class="bi bi-check2 text-success me-2"></i>Base Fare ₹100 + ₹15/km</li>
+                        <li class="mb-1"><i class="bi bi-check2 text-success me-2"></i>Rapid Intra-City Dispatch</li>
+                    </ul>
                 </div>
             </div>
 
@@ -232,9 +259,12 @@
                     <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-3 d-inline-block mb-3">
                         <i class="bi bi-truck fs-2"></i>
                     </div>
-                    <h5 class="fw-bold mb-2">Heavy Freight Trucks</h5>
-                    <p class="text-muted small mb-3">Heavy-duty trucks for industrial cargo, raw materials, and enterprise shipments up to 10,000 kg.</p>
-                    <a href="/services" class="text-primary text-decoration-none fw-semibold small">Learn More <i class="bi bi-chevron-right"></i></a>
+                    <h5 class="fw-bold mb-2">Heavy Truck</h5>
+                    <p class="text-muted small mb-3">Heavy-duty trucks for industrial cargo, bulk raw materials, and enterprise shipments up to 10,000 kg.</p>
+                    <ul class="list-unstyled small text-muted mb-0">
+                        <li class="mb-1"><i class="bi bi-check2 text-primary me-2"></i>Base Fare ₹250 + ₹25/km</li>
+                        <li class="mb-1"><i class="bi bi-check2 text-primary me-2"></i>Inter-City & Interstate Highways</li>
+                    </ul>
                 </div>
             </div>
 
@@ -244,16 +274,66 @@
                     <div class="p-3 bg-info bg-opacity-10 text-info rounded-3 d-inline-block mb-3">
                         <i class="bi bi-box-seam fs-2"></i>
                     </div>
-                    <h5 class="fw-bold mb-2">Commercial Packers & Movers</h5>
-                    <p class="text-muted small mb-3">Stress-free office relocation, warehouse transfer, and heavy equipment transport with trained crew.</p>
-                    <a href="/services" class="text-primary text-decoration-none fw-semibold small">Learn More <i class="bi bi-chevron-right"></i></a>
+                    <h5 class="fw-bold mb-2">Packers & Commercial Moving</h5>
+                    <p class="text-muted small mb-3">Stress-free office relocation, warehouse inventory transfer, and heavy equipment transport with trained crew.</p>
+                    <ul class="list-unstyled small text-muted mb-0">
+                        <li class="mb-1"><i class="bi bi-check2 text-info me-2"></i>Loading & Unloading Support</li>
+                        <li class="mb-1"><i class="bi bi-check2 text-info me-2"></i>Automated GST Invoicing</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Stats Banner -->
+<!-- ABOUT US SECTION (#about) -->
+<section id="about" class="py-5 border-top border-bottom" style="background-color: var(--body-bg);">
+    <div class="container py-4">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-semibold mb-3">About PortX Logistics</span>
+                <h2 class="display-6 fw-extrabold mb-4">Empowering Modern Supply Chains with Intelligent Route Optimization</h2>
+                <p class="text-muted lead fs-6 mb-0">
+                    PortX is India's leading intra-city and inter-city commercial logistics platform. We empower businesses, dispatchers, and drivers with real-time route optimization, transparent per-kilometer fare pricing, and automated invoice management.
+                </p>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="p-4 p-md-5 rounded-4 shadow-lg border" style="background: var(--card-bg); border-color: var(--card-border) !important; color: var(--text-main);">
+                    <h4 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                        <i class="bi bi-award-fill text-warning"></i> Why Choose PortX?
+                    </h4>
+                    
+                    <div class="d-flex gap-3 mb-4">
+                        <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-3 flex-shrink-0" style="height: fit-content;"><i class="bi bi-geo-alt-fill fs-4"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">OpenRouteService Navigation</h6>
+                            <p class="text-muted small mb-0">Computes exact road distances and travel duration with sub-millisecond precision.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 mb-4">
+                        <div class="p-3 bg-success bg-opacity-10 text-success rounded-3 flex-shrink-0" style="height: fit-content;"><i class="bi bi-receipt-cutoff fs-4"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Automated Per-KM Billing</h6>
+                            <p class="text-muted small mb-0">No hidden surge charges or manual estimates. Instant GST invoice generation.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-3 flex-shrink-0" style="height: fit-content;"><i class="bi bi-people-fill fs-4"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Dedicated Role Dashboard Controls</h6>
+                            <p class="text-muted small mb-0">Custom control portals for Admins, Dispatchers, and Fleet Drivers.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STATS BANNER -->
 <section class="py-5">
     <div class="container">
         <div class="stat-banner text-center shadow-lg">
@@ -268,11 +348,94 @@
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="display-5 fw-extrabold mb-1">50+</div>
-                    <div class="opacity-80 small fw-semibold">Cities Active</div>
+                    <div class="opacity-80 small fw-semibold">Active Cities</div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="display-5 fw-extrabold mb-1">99.8%</div>
                     <div class="opacity-80 small fw-semibold">On-Time Accuracy</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT US SECTION (#contact) -->
+<section id="contact" class="py-5" style="background-color: var(--body-bg);">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-semibold mb-2">Get in Touch</span>
+            <h2 class="display-6 fw-extrabold">We're Here to Support Your Fleet Operations</h2>
+            <p class="text-muted col-md-7 mx-auto">Have questions about enterprise logistics plans or dispatcher onboarding? Our team is available 24/7.</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <!-- Contact Info Cards -->
+            <div class="col-lg-4">
+                <div class="contact-card h-100">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-3"><i class="bi bi-telephone-fill fs-3"></i></div>
+                        <div>
+                            <div class="small text-muted fw-semibold">Customer Helpline</div>
+                            <div class="fw-bold fs-5 text-main">+91 1800-PORTX-LOG</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="p-3 bg-success bg-opacity-10 text-success rounded-3"><i class="bi bi-envelope-fill fs-3"></i></div>
+                        <div>
+                            <div class="small text-muted fw-semibold">Email Support</div>
+                            <div class="fw-bold fs-6 text-main">support@portx.com</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-3"><i class="bi bi-geo-alt-fill fs-3"></i></div>
+                        <div>
+                            <div class="small text-muted fw-semibold">Headquarters</div>
+                            <div class="fw-bold fs-6 text-main">BKC Commercial Complex, Mumbai, MH</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Inquiry Form -->
+            <div class="col-lg-8">
+                <div class="contact-card">
+                    <h5 class="fw-bold mb-4">Send Us a Message</h5>
+                    <form onsubmit="handleContactSubmit(event)">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Full Name *</label>
+                                <input type="text" class="form-control" placeholder="e.g. Rajesh Kumar" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Email Address *</label>
+                                <input type="email" class="form-control" placeholder="name@company.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Phone Number *</label>
+                                <input type="tel" class="form-control" placeholder="10-digit mobile number" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-semibold">Inquiry Type</label>
+                                <select class="form-select">
+                                    <option>Enterprise Logistics Account</option>
+                                    <option>Fleet Driver Registration</option>
+                                    <option>Dispatcher Portal Access</option>
+                                    <option>Billing & Invoice Support</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-semibold">Message</label>
+                                <textarea class="form-control" rows="4" placeholder="How can our team help your business?"></textarea>
+                            </div>
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-primary px-4 py-2.5 fw-bold rounded-pill">
+                                    <i class="bi bi-send-fill me-2"></i>Send Message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -284,9 +447,9 @@
     <div class="container">
         <div class="row g-4 mb-4">
             <div class="col-lg-4">
-                <a href="/" class="d-flex align-items-center gap-2 text-white text-decoration-none fs-3 fw-bold mb-3">
-                    <i class="bi bi-truck text-indigo" style="color: #818cf8;"></i>
-                    <span>PortX</span>
+                <a href="#" class="d-flex align-items-center gap-2 text-white text-decoration-none fs-3 fw-bold mb-3">
+                    <div class="logo-icon" style="width: 36px; height: 36px; min-width: 36px; font-size: 1.2rem;"><i class="bi bi-truck"></i></div>
+                    <span class="logo-text">PortX</span>
                 </a>
                 <p class="text-white-50 small mb-3 col-lg-10">
                     PortX is India's leading intra-city logistics platform providing seamless goods transportation, fleet optimization, and automated billing.
@@ -296,17 +459,17 @@
             <div class="col-6 col-lg-2">
                 <h6 class="fw-bold mb-3 text-uppercase text-light small">Company</h6>
                 <ul class="list-unstyled small text-white-50">
-                    <li class="mb-2"><a href="/about" class="text-white-50 text-decoration-none">About Us</a></li>
-                    <li class="mb-2"><a href="/services" class="text-white-50 text-decoration-none">Services</a></li>
-                    <li class="mb-2"><a href="/contact" class="text-white-50 text-decoration-none">Contact Us</a></li>
+                    <li class="mb-2"><a href="#about" class="text-white-50 text-decoration-none">About Us</a></li>
+                    <li class="mb-2"><a href="#services" class="text-white-50 text-decoration-none">Services</a></li>
+                    <li class="mb-2"><a href="#contact" class="text-white-50 text-decoration-none">Contact Us</a></li>
                 </ul>
             </div>
 
             <div class="col-6 col-lg-2">
                 <h6 class="fw-bold mb-3 text-uppercase text-light small">Fleet</h6>
                 <ul class="list-unstyled small text-white-50">
-                    <li class="mb-2"><a href="/services" class="text-white-50 text-decoration-none">Mini Commercial Vans</a></li>
-                    <li class="mb-2"><a href="/services" class="text-white-50 text-decoration-none">Heavy Cargo Trucks</a></li>
+                    <li class="mb-2"><a href="#services" class="text-white-50 text-decoration-none">Mini Van</a></li>
+                    <li class="mb-2"><a href="#services" class="text-white-50 text-decoration-none">Heavy Truck</a></li>
                 </ul>
             </div>
 
@@ -322,9 +485,9 @@
         <div class="d-flex flex-wrap justify-content-between align-items-center small text-white-50 pt-2">
             <div>&copy; 2026 PortX Logistics. All rights reserved.</div>
             <div class="d-flex gap-3">
-                <a href="/" class="text-white-50 text-decoration-none"><i class="bi bi-twitter-x fs-5"></i></a>
-                <a href="/" class="text-white-50 text-decoration-none"><i class="bi bi-linkedin fs-5"></i></a>
-                <a href="/" class="text-white-50 text-decoration-none"><i class="bi bi-facebook fs-5"></i></a>
+                <a href="#" class="text-white-50 text-decoration-none"><i class="bi bi-twitter-x fs-5"></i></a>
+                <a href="#" class="text-white-50 text-decoration-none"><i class="bi bi-linkedin fs-5"></i></a>
+                <a href="#" class="text-white-50 text-decoration-none"><i class="bi bi-facebook fs-5"></i></a>
             </div>
         </div>
     </div>
@@ -348,12 +511,18 @@
     }
 
     function calculateFare() {
-        const distance = 12.5; // km
-        const time = 35; // mins
+        const distance = 18.5; // km
+        const time = 45; // mins
         const fare = currentBase + (distance * currentPerKm);
 
         document.getElementById('calcDistanceTime').textContent = `~ ${distance} km (${time} mins)`;
         document.getElementById('calcFare').textContent = `₹ ${fare.toFixed(2)}`;
+    }
+
+    function handleContactSubmit(e) {
+        e.preventDefault();
+        alert('Thank you for contacting PortX Logistics! Our support representative will reach out to you within 2 hours.');
+        e.target.reset();
     }
 </script>
 </body>
